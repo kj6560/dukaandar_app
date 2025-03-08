@@ -1,0 +1,45 @@
+name: dukaandar
+description: "A new Flutter project."
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.4 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_bloc:
+  equatable:
+  flutter_secure_storage:
+  dio:
+  email_validator:
+  package_info_plus:
+  hive_flutter:
+  isar_flutter_libs:
+  path_provider:
+  flutter_launcher_icons:
+  flutter_svg:
+  flutter_barcode_scanner:
+  dropdown_search: ^5.0.6
+  cupertino_icons: ^1.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/launcher_icon.png"
+  adaptive_icon_background: "#ffffff" # (Optional for Android adaptive icons)
+  adaptive_icon_foreground: "assets/launcher_icon.png" # (Optional)
+  flutter_lints: ^3.0.0
+
+flutter:
+  assets:
+    - assets/
+    - assets/images/
+  uses-material-design: true
