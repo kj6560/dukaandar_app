@@ -34,12 +34,16 @@ class InventoryDetailScreen
                   ),
                 );
               } else if (state is LoadInventoryDetailSuccess) {
+                List<TransactionModel> tm = state.response.transactions;
                 return Container(
                   child: Column(
                     children: [
                       InkWell(
                         onTap: () {
-                          print("clicked on inventory");
+                          Navigator.popAndPushNamed(
+                              context, AppRoutes.productDetails, arguments: {
+                            "product_id": state.response.productId
+                          });
                         },
                         child: Card(
                           child: Container(
@@ -75,19 +79,64 @@ class InventoryDetailScreen
                       ),
                       Card(
                         child: Container(
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [],
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [],
-                              ),
-                            ],
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("Balance Quantity"),
+                                    Text("${state.response.balanceQuantity}")
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Card(
+                        child: Container(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text("Transactions: "),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Text("Transaction Type"),
+                                    Text("Quantity"),
+                                    Text("Transaction By")
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 2,
+                                  child: Container(
+                                    color: Colors.teal,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                transaction(tm)
+                              ],
+                            ),
                           ),
                         ),
                       )
@@ -103,5 +152,22 @@ class InventoryDetailScreen
         profilePicUrl: 'https://via.placeholder.com/150',
         name: controllerState.name,
         email: controllerState.email);
+  }
+
+  transaction(tm) {
+    List<Widget> tmWidgets = [];
+    tm.forEach((item) {
+      tmWidgets.add(Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Text("${item.transactionType}"),
+          Text("${item.quantity}"),
+          Text("${item.user.name}")
+        ],
+      ));
+    });
+    return Column(
+      children: tmWidgets,
+    );
   }
 }

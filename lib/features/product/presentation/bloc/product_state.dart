@@ -54,7 +54,7 @@ class LoadingProductUom extends ProductState {
 }
 
 class LoadProductUomSuccess extends ProductState {
-  final List<ProductUom> response;
+  final List<Uom> response;
 
   LoadProductUomSuccess(this.response);
 }

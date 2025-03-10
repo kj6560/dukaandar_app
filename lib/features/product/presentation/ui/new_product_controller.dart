@@ -25,8 +25,8 @@ class NewProductController extends StatefulWidget {
 
 class NewProductControllerState extends State<NewProductController> {
   String _scanBarcode = "";
-  ProductUom? selectedUom;
-  List<ProductUom> dropdownItems = [];
+  Uom? selectedUom;
+  List<Uom> dropdownItems = [];
 
   String name = "";
   String email = "";

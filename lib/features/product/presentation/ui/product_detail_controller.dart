@@ -38,30 +38,21 @@ class ProductDetailControllerState extends State<ProductDetailController> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final route = ModalRoute.of(context);
       if (route == null) {
-        print("❌ ModalRoute is NULL. Arguments not passed?");
         return;
       }
 
       final args = route.settings.arguments;
       if (args == null) {
-        print("❌ Arguments are NULL. Check if Navigator is passing arguments.");
         return;
       }
-
-      print("✅ Arguments found: $args");
-
-      if (args is Map<String, dynamic> && args.containsKey("sales_id")) {
+      if (args is Map<String, dynamic> && args.containsKey("product_id")) {
         String productId = args["product_id"].toString();
-        print("✅ Order ID: $productId"); // Debugging
-
         setState(() {
           product_id = productId;
         });
 
         BlocProvider.of<ProductBloc>(context)
             .add(LoadProductDetail(product_id: int.parse(product_id)));
-      } else {
-        print("❌ Arguments exist but 'sales_id' is missing.");
       }
     });
   }

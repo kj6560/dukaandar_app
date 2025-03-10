@@ -1,23 +1,23 @@
 import 'dart:convert';
 
-List<ProductUom> productUomFromJson(String str) =>
-    List<ProductUom>.from(json.decode(str).map((x) => ProductUom.fromJson(x)));
-String productUomToJson(ProductUom data) => json.encode(data.toJson());
+List<Uom> uomFromJson(String str) =>
+    List<Uom>.from(json.decode(str).map((x) => Uom.fromJson(x)));
+String uomToJson(Uom data) => json.encode(data.toJson());
 
-class ProductUom {
+class Uom {
   int id;
   String title;
   String slug;
   int isActive;
 
-  ProductUom({
+  Uom({
     required this.id,
     required this.title,
     required this.slug,
     required this.isActive,
   });
 
-  factory ProductUom.fromJson(Map<String, dynamic> json) => ProductUom(
+  factory Uom.fromJson(Map<String, dynamic> json) => Uom(
         id: json["id"],
         title: json["title"],
         slug: json["slug"],

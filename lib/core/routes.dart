@@ -1,9 +1,11 @@
 import 'package:dukaandar/features/Auth/presentation/ui/login_controller.dart';
+import 'package:dukaandar/features/customers/presentation/ui/customers_list_controller.dart';
 import 'package:dukaandar/features/home/presentation/ui/home_controller.dart';
 import 'package:dukaandar/features/inventory/presentation/ui/inventory_detail_controller.dart';
 import 'package:dukaandar/features/sales/presentation/ui/sales_detail_controller.dart';
 import 'package:flutter/material.dart';
 
+import '../features/customers/presentation/ui/new_customer_controller.dart';
 import '../features/home/presentation/ui/entry.dart';
 import '../features/inventory/presentation/ui/inventory_list_controller.dart';
 import '../features/inventory/presentation/ui/new_inventory_controller.dart';
@@ -26,6 +28,7 @@ class AppRoutes {
   static const String newProduct = '/new_product';
   static const String newSale = '/new_sale';
   static const String newInventory = '/new_Inventory';
+  static const String newCustomer = '/new_customer';
   static const String productDetails = '/product_details';
   static const String salesDetails = '/sales_details';
   static const String inventoryDetails = '/inventory_details';
@@ -41,7 +44,7 @@ class AppRoutes {
       case listSales:
         return MaterialPageRoute(builder: (_) => SalesListController());
       case listCustomers:
-        return MaterialPageRoute(builder: (_) => SalesListController());
+        return MaterialPageRoute(builder: (_) => CustomersListController());
       case listInventory:
         return MaterialPageRoute(builder: (_) => InventoryListController());
       case listProduct:
@@ -50,6 +53,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => NewProductController());
       case newSale:
         return MaterialPageRoute(builder: (_) => NewSaleController());
+      case newCustomer:
+        return MaterialPageRoute(builder: (_) => NewCustomerController());
       case newInventory:
         return MaterialPageRoute(builder: (_) => NewInventoryController());
       case salesDetails:

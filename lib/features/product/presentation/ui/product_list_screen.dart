@@ -74,7 +74,7 @@ class ProductListUi
                                         children: [
                                           Icon(
                                             Icons.currency_rupee,
-                                            size: 14,
+                                            size: 12,
                                           ),
                                           Text('${product.productMrp}')
                                         ],

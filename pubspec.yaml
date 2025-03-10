@@ -23,6 +23,7 @@ dependencies:
   flutter_launcher_icons:
   flutter_svg:
   flutter_barcode_scanner:
+  image_picker:
   dropdown_search: ^5.0.6
   cupertino_icons: ^1.0.6
 

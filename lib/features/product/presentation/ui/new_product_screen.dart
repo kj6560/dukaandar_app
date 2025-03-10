@@ -124,7 +124,7 @@ class NewProductScreen
                       width: MediaQuery.of(context).size.width,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: DropdownButtonFormField<ProductUom>(
+                        child: DropdownButtonFormField<Uom>(
                           decoration: InputDecoration(
                             labelText: 'Select Unit of Measurement',
                             border: OutlineInputBorder(),
@@ -132,15 +132,15 @@ class NewProductScreen
                                 horizontal: 12, vertical: 14),
                           ),
                           value: controllerState.selectedUom,
-                          items: state.response.map((ProductUom uom) {
-                            return DropdownMenuItem<ProductUom>(
+                          items: state.response.map((Uom uom) {
+                            return DropdownMenuItem<Uom>(
                               value: uom,
                               child: uom.id != 0
                                   ? Text("${uom.slug} (${uom.title})")
                                   : Text("${uom.slug}"),
                             );
                           }).toList(),
-                          onChanged: (ProductUom? newValue) {
+                          onChanged: (Uom? newValue) {
                             if (newValue != null) {
                               controllerState.updateDropdownItems(newValue);
                             }

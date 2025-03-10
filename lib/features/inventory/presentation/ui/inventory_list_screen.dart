@@ -47,8 +47,7 @@ class InventoryListUi
                                     children: [Text(inventory.product.name)],
                                   ),
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Row(
                                         children: [
@@ -56,17 +55,6 @@ class InventoryListUi
                                           Text("${inventory.balanceQuantity}")
                                         ],
                                       ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Icon(
-                                            Icons.currency_rupee,
-                                            size: 14,
-                                          ),
-                                          Text('${inventory.balanceQuantity}')
-                                        ],
-                                      )
                                     ],
                                   )
                                 ],

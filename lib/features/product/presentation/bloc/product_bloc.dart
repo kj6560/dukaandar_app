@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
-import 'package:dukaandar/features/product/data/models/product_uom.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../core/config/config.dart';
 import '../../../../core/local/hive_constants.dart';
 import '../../../Auth/data/User.dart';
+import '../../data/models/product_uom.dart';
 import '../../data/models/products_model.dart';
 import '../../data/repositories/product_repository.dart';
 
@@ -105,8 +105,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       User user = User.fromJson(jsonDecode(userString));
       int product_id = event.product_id;
       print('user org id: ${user.orgId}');
-      final response =
-          await productRepositoryImpl.fetchProducts(user.orgId!, token);
+      final response = await productRepositoryImpl
+          .fetchProducts(user.orgId!, token, id: product_id);
       if (response == null || response.data == null) {
         emit(LoadProductDetailFailure("No response from server"));
         return;
@@ -151,12 +151,12 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           ? jsonDecode(response.data['data'])
           : response.data['data'];
       print(data);
-      ProductUom uom = ProductUom(
+      Uom uom = Uom(
           id: 0,
           title: "select Unit of Measurement",
           slug: "select Unit of Measurement",
           isActive: 1);
-      final List<ProductUom> productUoms = productUomFromJson(jsonEncode(data));
+      final List<Uom> productUoms = uomFromJson(jsonEncode(data));
       productUoms.insert(0, uom);
       if (response.statusCode == 401) {
         emit(LoadProductUomFailure("Login failed."));

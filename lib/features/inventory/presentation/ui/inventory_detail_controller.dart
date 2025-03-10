@@ -4,11 +4,13 @@ import 'dart:convert';
 
 import 'package:dukaandar/core/widgets/base_screen.dart';
 import 'package:dukaandar/core/widgets/base_widget.dart';
+import 'package:dukaandar/features/inventory/data/models/inventory_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/config/config.dart';
 import '../../../../core/local/hive_constants.dart';
+import '../../../../core/routes.dart';
 import '../../../Auth/data/User.dart';
 import '../bloc/inventory_bloc.dart';
 

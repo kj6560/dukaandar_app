@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:dukaandar/features/product/data/models/product_uom.dart';
+
 List<Product> productFromJson(String str) =>
     List<Product>.from(json.decode(str).map((x) => Product.fromJson(x)));
 
@@ -14,10 +16,10 @@ class Product {
   double productMrp;
   double basePrice;
   int isActive;
-  String uom;
-  String uomSlug;
   String createdAt;
   String updatedAt;
+  ProductPrice? price; // ✅ Added ProductPrice model reference
+  Uom? uom; // ✅ Added ProductUom model reference
 
   Product({
     required this.id,
@@ -25,25 +27,80 @@ class Product {
     required this.name,
     required this.sku,
     required this.productMrp,
-    required this.basePrice,
     required this.isActive,
-    required this.uom,
-    required this.uomSlug,
+    required this.basePrice,
     this.createdAt = "",
     this.updatedAt = "",
+    this.price, // ✅ New price field
+    this.uom, // ✅ New UOM field
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
       id: json['id'],
+      orgId: json['org_id'] ?? 0,
       name: json['name'],
-      orgId: json['org_id'] ?? 0, // Default to 0 if missing
       sku: json['sku'],
       productMrp: double.parse(json['product_mrp'].toString()),
-      basePrice: double.parse(json['base_price'].toString()),
+      basePrice: json['price'] != null
+          ? double.parse(json['price']['price'].toString())
+          : 0.0, // ✅ Extract price
       isActive: json['is_active'],
-      uom: json['uom'],
-      uomSlug: json['uom_slug'],
+      createdAt: json['created_at'] ?? "",
+      updatedAt: json['updated_at'] ?? "",
+      price: json['price'] != null
+          ? ProductPrice.fromJson(json['price'])
+          : null, // ✅ Parse price if available
+      uom: json['uom'] != null
+          ? Uom.fromJson(json['uom'])
+          : null, // ✅ Parse UOM if available
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'org_id': orgId,
+      'name': name,
+      'sku': sku,
+      'product_mrp': productMrp,
+      'base_price': basePrice,
+      'is_active': isActive,
+      'created_at': createdAt,
+      'updated_at': updatedAt,
+      'price': price?.toJson(), // ✅ Include price in JSON response
+      'uom': uom?.toJson(), // ✅ Include UOM in JSON response
+    };
+  }
+}
+
+// ✅ Define ProductPrice model
+class ProductPrice {
+  int id;
+  int productId;
+  double price;
+  int uomId;
+  int isActive;
+  String createdAt;
+  String updatedAt;
+
+  ProductPrice({
+    required this.id,
+    required this.productId,
+    required this.price,
+    required this.uomId,
+    required this.isActive,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  factory ProductPrice.fromJson(Map<String, dynamic> json) {
+    return ProductPrice(
+      id: json['id'],
+      productId: json['product_id'],
+      price: double.parse(json['price'].toString()),
+      uomId: json['uom_id'],
+      isActive: json['is_active'],
       createdAt: json['created_at'] ?? "",
       updatedAt: json['updated_at'] ?? "",
     );
@@ -52,16 +109,14 @@ class Product {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'name': name,
-      'org_id': orgId,
-      'sku': sku,
-      'product_mrp': productMrp,
-      'base_price': basePrice,
+      'product_id': productId,
+      'price': price,
+      'uom_id': uomId,
       'is_active': isActive,
-      'uom': uom,
-      'uom_slug': uomSlug,
       'created_at': createdAt,
       'updated_at': updatedAt,
     };
   }
 }
+
+// ✅ Define ProductUom model

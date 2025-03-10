@@ -41,7 +41,7 @@ class SaleRepositoryImpl {
         'org_id': org_id,
         'order': jsonDecode(payload),
         'created_by': user_id,
-        'payment_method': payment_method,
+        'payment_mode': payment_method,
         'customer_id': customer_id
       };
       print(jsonEncode(body));

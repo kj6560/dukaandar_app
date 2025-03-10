@@ -1,0 +1,73 @@
+library new_customer_library;
+
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:dukaandar/core/widgets/base_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
+
+import '../../../../core/config/config.dart';
+import '../../../../core/local/hive_constants.dart';
+import '../../../../core/widgets/base_screen.dart';
+import '../../../Auth/data/User.dart';
+import '../bloc/customers_bloc.dart';
+
+part '../ui/new_customer_screen.dart';
+
+class NewCustomerController extends StatefulWidget {
+  const NewCustomerController({super.key});
+
+  @override
+  State<NewCustomerController> createState() => NewCustomerControllerState();
+}
+
+class NewCustomerControllerState extends State<NewCustomerController> {
+  String name = "";
+  String email = "";
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initAuthCred();
+  }
+
+  void initAuthCred() async {
+    String userJson = authBox.get(HiveKeys.userBox);
+    User user = User.fromJson(jsonDecode(userJson));
+    setState(() {
+      name = user.name;
+      email = user.email;
+    });
+  }
+
+  final formKey = GlobalKey<FormState>();
+  TextEditingController customerNameController = TextEditingController();
+  TextEditingController customerAddressController = TextEditingController();
+  TextEditingController customerPhoneNumberController = TextEditingController();
+  String? selectedValue; // Holds the selected dropdown value
+  List<String> dropdownItems = ["Customer Active", "YES", "NO"];
+  File? _image;
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _takePicture() async {
+    final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
+    if (photo != null) {
+      setState(() {
+        _image = File(photo.path);
+      });
+    }
+  }
+
+  void updatePaymentMode(String? newValue) {
+    setState(() {
+      selectedValue = newValue;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return NewCustomerScreen(this);
+  }
+}
