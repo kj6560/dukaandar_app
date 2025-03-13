@@ -52,31 +52,54 @@ class ProductListUi
                       child: Container(
                         height: 100,
                         child: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(2.0),
                           child: Card(
                             child: Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(2.0),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [Text(product.name)],
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(2.0),
+                                        child: Text(
+                                          product.name,
+                                          style: TextStyle(fontSize: 18),
+                                        ),
+                                      )
+                                    ],
                                   ),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(product.sku),
+                                      Padding(
+                                        padding: const EdgeInsets.all(2.0),
+                                        child: Text(
+                                          product.sku,
+                                          style: TextStyle(fontSize: 18),
+                                        ),
+                                      ),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Icon(
-                                            Icons.currency_rupee,
-                                            size: 12,
+                                          Padding(
+                                            padding: const EdgeInsets.all(2.0),
+                                            child: Icon(
+                                              Icons.currency_rupee,
+                                              size: 12,
+                                            ),
                                           ),
-                                          Text('${product.productMrp}')
+                                          Padding(
+                                            padding: const EdgeInsets.all(2.0),
+                                            child: Text(
+                                              '${product.productMrp}',
+                                              style: TextStyle(fontSize: 18),
+                                            ),
+                                          )
                                         ],
                                       )
                                     ],

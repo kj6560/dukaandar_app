@@ -75,12 +75,18 @@ class BaseScreen extends StatelessWidget {
               children: [
                 ListTile(
                   leading: const Icon(Icons.home),
+                  title: const Text("Home"),
+                  onTap: () {
+                    Navigator.popAndPushNamed(context, '/home');
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.home),
                   title: const Text("About"),
                   onTap: () {
-                    Navigator.pushNamedAndRemoveUntil(
+                    Navigator.popAndPushNamed(
                       context,
                       '/about',
-                      (route) => false,
                     );
                   },
                 ),
@@ -88,10 +94,16 @@ class BaseScreen extends StatelessWidget {
                   leading: const Icon(Icons.settings),
                   title: const Text("Settings"),
                   onTap: () {
-                    Navigator.pushNamedAndRemoveUntil(
+                    Navigator.popAndPushNamed(context, '/settings');
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.settings),
+                  title: const Text("Printer Setup"),
+                  onTap: () {
+                    Navigator.popAndPushNamed(
                       context,
                       '/settings',
-                      (route) => false,
                     );
                   },
                 ),

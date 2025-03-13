@@ -133,7 +133,17 @@ class SalesDetailScreen
                           ),
                         ),
                       ),
-                      showDetail(details)
+                      showDetail(details),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SizedBox(
+                          height: 30,
+                          child: ElevatedButton(
+                            onPressed: () {},
+                            child: Text("Print Invoice"),
+                          ),
+                        ),
+                      )
                     ],
                   ),
                 ),

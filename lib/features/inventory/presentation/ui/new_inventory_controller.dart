@@ -1,10 +1,16 @@
 library new_inventory_library;
 
+import 'dart:convert';
+
+import 'package:dukaandar/core/widgets/base_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/config/config.dart';
+import '../../../../core/local/hive_constants.dart';
 import '../../../../core/widgets/base_widget.dart';
+import '../../../Auth/data/User.dart';
 import '../bloc/inventory_bloc.dart';
 
 part 'new_inventory_screen.dart';
@@ -18,6 +24,16 @@ class NewInventoryController extends StatefulWidget {
 
 class NewInventoryControllerState extends State<NewInventoryController> {
   String _scanBarcode = "";
+  String name = "";
+  String email = "";
+  void initAuthCred() async {
+    String userJson = authBox.get(HiveKeys.userBox);
+    User user = User.fromJson(jsonDecode(userJson));
+    setState(() {
+      name = user.name;
+      email = user.email;
+    });
+  }
 
   Future<void> scanBarcode() async {
     String barcodeScanRes;
@@ -55,6 +71,13 @@ class NewInventoryControllerState extends State<NewInventoryController> {
       );
     }
     print("submit linked to controller");
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initAuthCred();
   }
 
   @override

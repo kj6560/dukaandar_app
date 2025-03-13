@@ -8,36 +8,25 @@ class NewProductScreen
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return BaseScreen(
         title: "New Product",
         body: BlocConsumer<ProductBloc, ProductState>(
           listener: (context, state) {
-            // TODO: implement listener
+            if (state is GenerateBarcodeSuccess) {
+              controllerState.barcodeImageUrl =
+                  state.barcodeUrl; // Store barcode image URL
+            }
           },
           builder: (context, state) {
             if (state is LoadingProductUom) {
-              return Container(
-                child: Column(
-                  children: [
-                    Center(
-                      child: CircularProgressIndicator(color: Colors.teal),
-                    )
-                  ],
-                ),
-              );
+              return Center(
+                  child: CircularProgressIndicator(color: Colors.teal));
             } else if (state is LoadProductUomFailure) {
-              return Container(
-                child: Column(
-                  children: [
-                    Center(
-                      child: Text("Failed To Load Uoms"),
-                    )
-                  ],
-                ),
-              );
-            } else if (state is LoadProductUomSuccess) {
+              return Center(child: Text("Failed To Load UOMs"));
+            } else if (state is LoadProductUomSuccess ||
+                state is GenerateBarcodeSuccess) {
               if (controllerState.selectedUom == null &&
+                  state is LoadProductUomSuccess &&
                   state.response.isNotEmpty) {
                 controllerState.selectedUom = state.response.first;
               }
@@ -109,7 +98,7 @@ class NewProductScreen
                       child: TextFormField(
                         controller: controllerState.skuController,
                         decoration: InputDecoration(
-                          labelText: 'Product Sku',
+                          labelText: 'Product Sku for/from barcode',
                           border: OutlineInputBorder(),
                         ),
                         validator: (value) {
@@ -120,6 +109,53 @@ class NewProductScreen
                         },
                       ),
                     ),
+                    SizedBox(
+                      width: 250,
+                      height: 35,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          controllerState.generateBarcode();
+                        },
+                        child: Text('Generate Barcode',
+                            style: TextStyle(fontSize: 18)),
+                      ),
+                    ),
+                    // Barcode Image Display + Download
+                    if (state is GenerateBarcodeSuccess &&
+                        controllerState.barcodeImageUrl != null)
+                      Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Image.network(
+                              controllerState.barcodeImageUrl!,
+                              width: 200,
+                              height: 100,
+                              fit: BoxFit.contain,
+                              loadingBuilder:
+                                  (context, child, loadingProgress) {
+                                if (loadingProgress == null) return child;
+                                return Center(
+                                    child: CircularProgressIndicator());
+                              },
+                              errorBuilder: (context, error, stackTrace) {
+                                return Text("Failed to load barcode image");
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            width: 200,
+                            child: ElevatedButton.icon(
+                              onPressed: () async {
+                                await controllerState
+                                    .downloadBarcodeImage(context);
+                              },
+                              icon: Icon(Icons.download),
+                              label: Text("Download Barcode"),
+                            ),
+                          ),
+                        ],
+                      ),
                     SizedBox(
                       width: MediaQuery.of(context).size.width,
                       child: Padding(
@@ -132,14 +168,16 @@ class NewProductScreen
                                 horizontal: 12, vertical: 14),
                           ),
                           value: controllerState.selectedUom,
-                          items: state.response.map((Uom uom) {
-                            return DropdownMenuItem<Uom>(
-                              value: uom,
-                              child: uom.id != 0
-                                  ? Text("${uom.slug} (${uom.title})")
-                                  : Text("${uom.slug}"),
-                            );
-                          }).toList(),
+                          items: state is LoadProductUomSuccess
+                              ? state.response.map((Uom uom) {
+                                  return DropdownMenuItem<Uom>(
+                                    value: uom,
+                                    child: uom.id != 0
+                                        ? Text("${uom.slug} (${uom.title})")
+                                        : Text("${uom.slug}"),
+                                  );
+                                }).toList()
+                              : [],
                           onChanged: (Uom? newValue) {
                             if (newValue != null) {
                               controllerState.updateDropdownItems(newValue);

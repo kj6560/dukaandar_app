@@ -20,3 +20,16 @@ class LoadCustomersFailure extends CustomersState {
 class LoadingCustomers extends CustomersState {
   LoadingCustomers();
 }
+
+class NewCustomerCreateSuccess extends CustomersState {
+  final Customer customer;
+  NewCustomerCreateSuccess(this.customer);
+}
+
+class NewCustomerCreateFailure extends CustomersState {
+  final String error;
+
+  NewCustomerCreateFailure(this.error);
+}
+
+class CreatingNewCustomer extends CustomersState {}

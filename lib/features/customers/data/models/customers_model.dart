@@ -32,12 +32,12 @@ class Customer {
   factory Customer.fromJson(Map<String, dynamic> json) {
     return Customer(
       id: json["id"],
-      orgId: json["org_id"],
+      orgId: int.parse(json["org_id"].toString()),
       customerName: json["customer_name"],
       customerAddress: json["customer_address"],
       customerPhoneNumber: json["customer_phone_number"],
       customerPic: json["customer_pic"],
-      customerActive: json["customer_active"],
+      customerActive: int.parse(json["customer_active"].toString()),
       createdAt: json["created_at"],
       updatedAt: json["updated_at"],
     );

@@ -38,75 +38,110 @@ class ProductDetailScreen
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Product Name: "),
-                            Text("${state.response.name}")
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Product Sku: "),
-                            Text("${state.response.sku}")
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Product MRP: "),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.currency_rupee,
-                                  size: 12,
-                                ),
-                                Text("${state.response.productMrp}")
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Product Base Price: "),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.currency_rupee,
-                                  size: 12,
-                                ),
-                                Text("${state.response.basePrice}")
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Product UOM: "),
-                            Text("${state.response.uom!.slug}")
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Product Active: "),
                             Text(
-                                "${state.response.isActive == 1 ? 'Yes' : 'No'}")
+                              "Product Name: ",
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            Text(
+                              "${state.response.name}",
+                              style: TextStyle(fontSize: 18),
+                            )
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Product Sku: ",
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            Text(
+                              "${state.response.sku}",
+                              style: TextStyle(fontSize: 18),
+                            )
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Product MRP: ",
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.currency_rupee,
+                                  size: 12,
+                                ),
+                                Text(
+                                  "${state.response.productMrp}",
+                                  style: TextStyle(fontSize: 18),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Product Base Price: ",
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.currency_rupee,
+                                  size: 12,
+                                ),
+                                Text(
+                                  "${state.response.basePrice}",
+                                  style: TextStyle(fontSize: 18),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Product UOM: ",
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            Text(
+                              "${state.response.uom!.slug}",
+                              style: TextStyle(fontSize: 18),
+                            )
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Product Active: ",
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            Text(
+                              "${state.response.isActive == 1 ? 'Yes' : 'No'}",
+                              style: TextStyle(fontSize: 18),
+                            )
                           ],
                         ),
                       )

@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gallery_saver/gallery_saver.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../core/config/config.dart';
 import '../../../../core/local/hive_constants.dart';
@@ -59,6 +61,7 @@ class NewProductControllerState extends State<NewProductController> {
   TextEditingController priceController = TextEditingController();
   TextEditingController skuController = TextEditingController();
   TextEditingController basePriceController = TextEditingController();
+  String barcodeImageUrl = "";
 
   @override
   Widget build(BuildContext context) => NewProductScreen(this);
@@ -99,5 +102,45 @@ class NewProductControllerState extends State<NewProductController> {
     }
 
     if (!mounted) return;
+  }
+
+  void generateBarcode() {
+    BlocProvider.of<ProductBloc>(context)
+        .add(GenerateBarcode(barcodeValue: skuController.text));
+  }
+
+  void onBarcodeGenerated(GenerateBarcodeSuccess state) {
+    setState(() {
+      barcodeImageUrl = state.barcodeUrl;
+    });
+  }
+
+  /// Function to download and save barcode image
+  Future<void> downloadBarcodeImage(BuildContext context) async {
+    if (await _requestStoragePermission()) {
+      await GallerySaver.saveImage(barcodeImageUrl).then((bool? success) {
+        if (success == true) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Barcode downloaded successfully!")),
+          );
+        } else {
+          print("❌ Failed to save barcode image.");
+        }
+      });
+    } else {
+      print("❌ Storage permission denied.");
+    }
+  }
+
+  Future<bool> _requestStoragePermission() async {
+    if (await Permission.storage.request().isGranted) {
+      return true;
+    }
+
+    if (await Permission.photos.request().isGranted) {
+      return true;
+    }
+
+    return false;
   }
 }

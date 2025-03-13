@@ -5,6 +5,7 @@ import 'package:dukaandar/features/inventory/presentation/ui/inventory_detail_co
 import 'package:dukaandar/features/sales/presentation/ui/sales_detail_controller.dart';
 import 'package:flutter/material.dart';
 
+import '../features/Settings/presentation/ui/settings_controller.dart';
 import '../features/customers/presentation/ui/new_customer_controller.dart';
 import '../features/home/presentation/ui/entry.dart';
 import '../features/inventory/presentation/ui/inventory_list_controller.dart';
@@ -32,6 +33,7 @@ class AppRoutes {
   static const String productDetails = '/product_details';
   static const String salesDetails = '/sales_details';
   static const String inventoryDetails = '/inventory_details';
+  static const String appSettings = '/settings';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -49,6 +51,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => InventoryListController());
       case listProduct:
         return MaterialPageRoute(builder: (_) => ProductListController());
+      case appSettings:
+        return MaterialPageRoute(builder: (_) => SettingsController());
       case newProduct:
         return MaterialPageRoute(builder: (_) => NewProductController());
       case newSale:

@@ -24,7 +24,11 @@ dependencies:
   flutter_svg:
   flutter_barcode_scanner:
   image_picker:
+  cached_network_image:
+  gallery_saver: ^2.3.2
+  permission_handler:
   dropdown_search: ^5.0.6
+  paytm_allinonesdk:
   cupertino_icons: ^1.0.6
 
 dev_dependencies:

@@ -1,3 +1,4 @@
+import 'package:dukaandar/features/Settings/presentation/bloc/settings_bloc.dart';
 import 'package:dukaandar/features/customers/presentation/bloc/customers_bloc.dart';
 import 'package:dukaandar/features/inventory/presentation/bloc/inventory_bloc.dart';
 import 'package:dukaandar/features/sales/presentation/bloc/sales_bloc.dart';
@@ -46,6 +47,9 @@ class MyApp extends StatelessWidget {
         }),
         BlocProvider(create: (context) {
           return CustomersBloc();
+        }),
+        BlocProvider(create: (context) {
+          return SettingsBloc();
         }),
       ],
       child: MaterialApp(

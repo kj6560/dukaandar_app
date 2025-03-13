@@ -64,3 +64,17 @@ class LoadProductUomFailure extends ProductState {
 
   LoadProductUomFailure(this.error);
 }
+
+class GenerateBarcodeSuccess extends ProductState {
+  final String barcodeUrl;
+
+  GenerateBarcodeSuccess(this.barcodeUrl);
+}
+
+class GenerateBarcodeFailure extends ProductState {
+  final String error;
+
+  GenerateBarcodeFailure(this.error);
+}
+
+class GeneratingBarcode extends ProductState {}

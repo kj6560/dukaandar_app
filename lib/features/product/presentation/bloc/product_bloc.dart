@@ -22,6 +22,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     on<AddNewProduct>(_addNewProduct);
     on<LoadProductDetail>(_loadProductDetail);
     on<LoadProductUom>(_loadProductUom);
+    on<GenerateBarcode>(_generateBarcode);
   }
 
   void _loadProduct(LoadProductList event, Emitter<ProductState> emit) async {
@@ -167,6 +168,38 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       print('Exception in bloc: $e');
       print('Stacktrace: $stacktrace');
       emit(LoadProductUomFailure("An error occurred."));
+    }
+    return;
+  }
+
+  void _generateBarcode(
+      GenerateBarcode event, Emitter<ProductState> emit) async {
+    try {
+      String token = await authBox.get(HiveKeys.accessToken);
+      String barcodeValue = event.barcodeValue;
+
+      final response =
+          await productRepositoryImpl.generateBarcode(token, barcodeValue);
+      if (response == null || response.data == null) {
+        emit(GenerateBarcodeFailure("No response from server"));
+        return;
+      }
+
+      // Ensure data is always a Map<String, dynamic>
+      final data = response.data['data'] is String
+          ? jsonDecode(response.data['data'])
+          : response.data['data'];
+      print(data['barcode_url']);
+
+      if (response.statusCode == 401) {
+        emit(GenerateBarcodeFailure("Login failed."));
+        return;
+      }
+      emit(GenerateBarcodeSuccess(data['barcode_url']));
+    } catch (e, stacktrace) {
+      print('Exception in bloc: $e');
+      print('Stacktrace: $stacktrace');
+      emit(GenerateBarcodeFailure("An error occurred."));
     }
     return;
   }

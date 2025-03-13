@@ -67,7 +67,7 @@ class HomeScreen extends WidgetView<HomeScreen, HomeControllerState> {
                                 },
                               ),
                               Text(
-                                "Order",
+                                "Orders",
                                 style: TextStyle(fontSize: 18),
                               )
                             ],
@@ -115,7 +115,7 @@ class HomeScreen extends WidgetView<HomeScreen, HomeControllerState> {
                                 },
                               ),
                               Text(
-                                "Product",
+                                "Products",
                                 style: TextStyle(fontSize: 18),
                               )
                             ],
@@ -189,7 +189,7 @@ class HomeScreen extends WidgetView<HomeScreen, HomeControllerState> {
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Text(
-                                        "${state.response.sales.salesToday}",
+                                        "${state.response.salesData.salesToday}",
                                         style: TextStyle(fontSize: 18),
                                       ),
                                     ),
@@ -215,7 +215,7 @@ class HomeScreen extends WidgetView<HomeScreen, HomeControllerState> {
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Text(
-                                        "${state.response.sales.salesThisMonth}",
+                                        "${state.response.salesData.salesThisMonth}",
                                         style: TextStyle(fontSize: 18),
                                       ),
                                     ),
@@ -247,7 +247,7 @@ class HomeScreen extends WidgetView<HomeScreen, HomeControllerState> {
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Text(
-                                        "${state.response.sales.salesTotal}",
+                                        "${state.response.salesData.salesTotal}",
                                         style: TextStyle(fontSize: 18),
                                       ),
                                     ),
@@ -297,7 +297,7 @@ class HomeScreen extends WidgetView<HomeScreen, HomeControllerState> {
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Text(
-                                        "${state.response.inventory.inventoryAddedToday}",
+                                        "${state.response.inventoryData.inventoryAddedToday}",
                                         style: TextStyle(fontSize: 18),
                                       ),
                                     ),
@@ -319,7 +319,7 @@ class HomeScreen extends WidgetView<HomeScreen, HomeControllerState> {
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Text(
-                                        "${state.response.inventory.inventoryAddedThisMonth}",
+                                        "${state.response.inventoryData.inventoryAddedThisMonth}",
                                         style: TextStyle(fontSize: 18),
                                       ),
                                     ),
@@ -347,7 +347,7 @@ class HomeScreen extends WidgetView<HomeScreen, HomeControllerState> {
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Text(
-                                        "${state.response.inventory.inventoryAddedTotal}",
+                                        "${state.response.inventoryData.inventoryAddedTotal}",
                                         style: TextStyle(fontSize: 18),
                                       ),
                                     ),
@@ -397,7 +397,7 @@ class HomeScreen extends WidgetView<HomeScreen, HomeControllerState> {
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Text(
-                                        "${state.response.products.productsAddedToday}",
+                                        "${state.response.productsData.productsAddedToday}",
                                         style: TextStyle(fontSize: 18),
                                       ),
                                     ),
@@ -419,7 +419,7 @@ class HomeScreen extends WidgetView<HomeScreen, HomeControllerState> {
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Text(
-                                        "${state.response.products.productsAddedThisMonth}",
+                                        "${state.response.productsData.productsAddedThisMonth}",
                                         style: TextStyle(fontSize: 18),
                                       ),
                                     ),
@@ -447,7 +447,7 @@ class HomeScreen extends WidgetView<HomeScreen, HomeControllerState> {
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Text(
-                                        "${state.response.products.productsAddedTotal}",
+                                        "${state.response.productsData.productsAddedTotal}",
                                         style: TextStyle(fontSize: 18),
                                       ),
                                     ),
@@ -460,6 +460,17 @@ class HomeScreen extends WidgetView<HomeScreen, HomeControllerState> {
                       ],
                     ),
                   ],
+                );
+              } else if (state is LoadFailure) {
+                return Container(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Center(
+                        child: Text(state.error),
+                      )
+                    ],
+                  ),
                 );
               } else {
                 return Container(

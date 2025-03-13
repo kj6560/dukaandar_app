@@ -9,7 +9,7 @@ class NewSaleScreen extends WidgetView<NewSaleScreen, NewSaleControllerState> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return BaseScreen(
-      title: "Sales Detail",
+      title: "New Sale",
       profilePicUrl: 'https://via.placeholder.com/150',
       name: controllerState.name,
       email: controllerState.email,

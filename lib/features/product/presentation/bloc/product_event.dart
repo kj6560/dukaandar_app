@@ -17,6 +17,7 @@ class AddNewProduct extends ProductEvent {
   final double base_price;
   final String sku;
   final int uom_id;
+
   const AddNewProduct(
       {required this.name,
       required this.price,
@@ -33,4 +34,10 @@ class LoadProductDetail extends ProductEvent {
 
 class LoadProductUom extends ProductEvent {
   const LoadProductUom();
+}
+
+class GenerateBarcode extends ProductEvent {
+  final String barcodeValue;
+
+  GenerateBarcode({required this.barcodeValue});
 }

@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/config/config.dart';
 import '../../../../core/local/hive_constants.dart';
+import '../../../../core/routes.dart';
 import '../../../../core/widgets/base_screen.dart';
 import '../../../Auth/data/User.dart';
 import '../bloc/customers_bloc.dart';
@@ -26,6 +27,7 @@ class NewCustomerController extends StatefulWidget {
 class NewCustomerControllerState extends State<NewCustomerController> {
   String name = "";
   String email = "";
+
   @override
   void initState() {
     // TODO: implement initState
@@ -66,8 +68,26 @@ class NewCustomerControllerState extends State<NewCustomerController> {
     });
   }
 
+  void createNewCustomer() {
+    var customer_name = customerNameController.text.toString();
+    var customer_address = customerAddressController.text.toString();
+    var customer_phone_number = customerPhoneNumberController.text.toString();
+    var customer_active = selectedValue == "YES" ? 1 : 0;
+    var customer_image = _image;
+    BlocProvider.of<CustomersBloc>(context).add(NewCustomerCreate(
+        customer_name: customer_name,
+        customer_address: customer_address,
+        customer_phone_number: customer_phone_number,
+        customer_image: customer_image!,
+        customer_active: customer_active));
+  }
+
   @override
   Widget build(BuildContext context) {
     return NewCustomerScreen(this);
+  }
+
+  void hasApiResponse(CustomersState state) {
+    Navigator.popAndPushNamed(context, AppRoutes.listCustomers);
   }
 }

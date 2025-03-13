@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
-import 'package:dukaandar/core/Dio/home/DioRepo.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
@@ -9,6 +8,7 @@ import '../../../../core/config/config.dart';
 import '../../../../core/local/hive_constants.dart';
 import '../../../Auth/data/User.dart';
 import '../../data/home_response.dart';
+import '../../data/home_response_model.dart';
 
 part 'home_event.dart';
 part 'home_state.dart';
@@ -28,6 +28,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       String token = await authBox.get(HiveKeys.accessToken);
       User user = User.fromJson(jsonDecode(userString));
       final response = await homeRepositoryImpl.fetchKpi(user.id, token);
+      print(response);
       if (response == null || response.data == null) {
         emit(LoadFailure(error: "No response from server"));
         return;
@@ -41,6 +42,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       print(kpiResponse);
       if (response.statusCode == 401) {
         emit(LoadFailure(error: "Load failed."));
+        return;
+      }
+      if (response.statusCode == 200 && response.data['status'] == 'error') {
+        emit(LoadFailure(error: "You Do not have an active subscription"));
         return;
       }
       emit(LoadSuccess(response: kpiResponse));

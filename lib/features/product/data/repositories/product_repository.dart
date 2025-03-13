@@ -85,4 +85,26 @@ class ProductRepositoryImpl {
       print(stacktrace);
     }
   }
+
+  Future<Response?> generateBarcode(String token, String barcodeValue) async {
+    try {
+      var body = {'barcode_value': barcodeValue};
+      print(body);
+      Response response = await dio.get(
+        EndPoints.generateBarcode,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+        data: jsonEncode(body),
+      );
+      return response;
+    } catch (e, stacktrace) {
+      print(e.toString());
+      print(stacktrace);
+    }
+  }
 }

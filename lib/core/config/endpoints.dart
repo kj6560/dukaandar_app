@@ -18,4 +18,7 @@ class EndPoints {
   static const String newSales = '${baseUrl}/api/updateOrder';
 
   static const String fetchCustomers = '${baseUrl}/api/fetchCustomers';
+  static const String newCustomer = '${baseUrl}/api/createCustomer';
+
+  static const String generateBarcode = '${baseUrl}/api/generateBarcode';
 }

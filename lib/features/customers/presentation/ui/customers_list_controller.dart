@@ -2,6 +2,7 @@ library customers_list_library;
 
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dukaandar/features/customers/presentation/bloc/customers_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,11 +27,13 @@ class CustomersListController extends StatefulWidget {
 class CustomersListControllerState extends State<CustomersListController> {
   String name = "";
   String email = "";
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     initAuthCred();
+    BlocProvider.of<CustomersBloc>(context).add(LoadCustomers());
   }
 
   void initAuthCred() async {
