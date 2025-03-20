@@ -10,7 +10,8 @@ class BaseScreen extends StatefulWidget {
   final String email;
   final VoidCallback? onFabPressed;
   final IconData fabIcon;
-  final int selectedIndex; // ✅ Added selectedIndex
+  final int selectedIndex;
+  final List<Widget>? appBarActions; // ✅ Custom AppBar actions
 
   const BaseScreen({
     Key? key,
@@ -21,7 +22,8 @@ class BaseScreen extends StatefulWidget {
     required this.email,
     this.onFabPressed,
     this.fabIcon = Icons.add,
-    this.selectedIndex = 0, // Default to home
+    this.selectedIndex = 0,
+    this.appBarActions, // ✅ Allow custom actions
   }) : super(key: key);
 
   @override
@@ -57,11 +59,9 @@ class _BaseScreenState extends State<BaseScreen> {
         break;
       case 3:
         route = AppRoutes.listProduct;
-
         break;
       case 4:
         route = AppRoutes.listCustomers;
-
         break;
       default:
         return;
@@ -88,6 +88,7 @@ class _BaseScreenState extends State<BaseScreen> {
             scaffoldKey.currentState?.openDrawer();
           },
         ),
+        actions: widget.appBarActions, // ✅ Only custom actions are configurable
       ),
       drawer: _buildDrawer(context),
       body: widget.body,
@@ -105,35 +106,15 @@ class _BaseScreenState extends State<BaseScreen> {
         unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(
-              icon: Icon(
-                Icons.home,
-                size: 30,
-              ),
-              label: "Home"),
+              icon: Icon(Icons.home, size: 30), label: "Home"),
           BottomNavigationBarItem(
-              icon: Icon(
-                Icons.new_label_rounded,
-                size: 30,
-              ),
-              label: "Orders"),
+              icon: Icon(Icons.new_label_rounded, size: 30), label: "Orders"),
           BottomNavigationBarItem(
-              icon: Icon(
-                Icons.inventory,
-                size: 30,
-              ),
-              label: "Inventory"),
+              icon: Icon(Icons.inventory, size: 30), label: "Inventory"),
           BottomNavigationBarItem(
-              icon: Icon(
-                Icons.next_week_rounded,
-                size: 30,
-              ),
-              label: "Products"),
+              icon: Icon(Icons.next_week_rounded, size: 30), label: "Products"),
           BottomNavigationBarItem(
-              icon: Icon(
-                Icons.person,
-                size: 30,
-              ),
-              label: "Customers"),
+              icon: Icon(Icons.person, size: 30), label: "Customers"),
         ],
       ),
     );

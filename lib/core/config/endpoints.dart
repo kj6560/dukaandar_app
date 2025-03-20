@@ -11,6 +11,11 @@ class EndPoints {
   static const String fetchProductUom = '${baseUrl}/api/fetchProductUoms';
   static const String addProduct = '${baseUrl}/api/addProduct';
 
+  static const String fetchSchemes = '${baseUrl}/api/fetchSchemes';
+  static const String updateScheme = '${baseUrl}/api/updateScheme';
+  static const String deleteScheme = '${baseUrl}/api/deleteScheme';
+  static const String allSchemes = '${baseUrl}/api/allSchemes';
+
   static const String fetchInventory = '${baseUrl}/api/fetchInventory';
   static const String updateInventory = '${baseUrl}/api/updateInventory';
 

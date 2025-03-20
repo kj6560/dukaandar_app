@@ -3,6 +3,7 @@ import 'package:dukaandar/features/customers/presentation/ui/customers_list_cont
 import 'package:dukaandar/features/home/presentation/ui/home_controller.dart';
 import 'package:dukaandar/features/inventory/presentation/ui/inventory_detail_controller.dart';
 import 'package:dukaandar/features/sales/presentation/ui/sales_detail_controller.dart';
+import 'package:dukaandar/features/schemes/presentation/ui/scheme_list_controller.dart';
 import 'package:flutter/material.dart';
 
 import '../features/Settings/presentation/ui/settings_controller.dart';
@@ -26,6 +27,7 @@ class AppRoutes {
   static const String listProduct = '/list_product';
   static const String listSales = '/list_sales';
   static const String listCustomers = '/list_customers';
+  static const String listSchemes = '/list_schemes';
   static const String newProduct = '/new_product';
   static const String newSale = '/new_sale';
   static const String newInventory = '/new_Inventory';
@@ -51,6 +53,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => InventoryListController());
       case listProduct:
         return MaterialPageRoute(builder: (_) => ProductListController());
+      case listSchemes:
+        return MaterialPageRoute(builder: (_) => SchemeListController());
       case appSettings:
         return MaterialPageRoute(builder: (_) => SettingsController());
       case newProduct:

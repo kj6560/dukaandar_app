@@ -134,6 +134,18 @@ class ProductListUi
       onFabPressed: () {
         Navigator.popAndPushNamed(context, AppRoutes.newProduct);
       },
+      appBarActions: [
+        IconButton(
+          icon: Icon(
+            Icons.local_offer,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            Navigator.popAndPushNamed(context, AppRoutes.listSchemes);
+            print("schemes clicked");
+          },
+        ),
+      ],
     );
     ;
   }

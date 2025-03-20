@@ -2,6 +2,7 @@ import 'package:dukaandar/features/Settings/presentation/bloc/settings_bloc.dart
 import 'package:dukaandar/features/customers/presentation/bloc/customers_bloc.dart';
 import 'package:dukaandar/features/inventory/presentation/bloc/inventory_bloc.dart';
 import 'package:dukaandar/features/sales/presentation/bloc/sales_bloc.dart';
+import 'package:dukaandar/features/schemes/presentation/bloc/scheme_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -47,6 +48,9 @@ class MyApp extends StatelessWidget {
         }),
         BlocProvider(create: (context) {
           return CustomersBloc();
+        }),
+        BlocProvider(create: (context) {
+          return SchemeBloc();
         }),
         BlocProvider(create: (context) {
           return SettingsBloc();
