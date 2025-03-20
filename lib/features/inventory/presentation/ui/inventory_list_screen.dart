@@ -89,6 +89,7 @@ class InventoryListUi
               return Container();
             }
           }),
+      selectedIndex: 2,
       onFabPressed: () {
         Navigator.popAndPushNamed(context, AppRoutes.newInventory);
       },

@@ -141,6 +141,7 @@ class NewCustomerScreen
           );
         }
       }),
+      selectedIndex: 4,
     );
   }
 }

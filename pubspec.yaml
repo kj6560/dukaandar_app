@@ -29,6 +29,7 @@ dependencies:
   permission_handler:
   dropdown_search: ^5.0.6
   paytm_allinonesdk:
+  auto_size_text:
   cupertino_icons: ^1.0.6
 
 dev_dependencies:

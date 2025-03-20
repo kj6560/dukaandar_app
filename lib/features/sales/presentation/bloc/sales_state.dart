@@ -42,3 +42,16 @@ class LoadingSalesList extends SalesState {
 class LoadingSalesDetail extends SalesState {
   LoadingSalesDetail();
 }
+
+class FetchingProductDetail extends SalesState {}
+
+class ProductDetailFetchSuccess extends SalesState {
+  final Product product;
+
+  ProductDetailFetchSuccess(this.product);
+}
+
+class ProductDetailFetchFailure extends SalesState {
+  final String error;
+  ProductDetailFetchFailure(this.error);
+}

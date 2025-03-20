@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/config/config.dart';
 import '../../../../core/local/hive_constants.dart';
+import '../../../../core/routes.dart';
 import '../../../Auth/data/User.dart';
 
 part '../ui/product_detail_screen.dart';

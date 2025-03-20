@@ -62,4 +62,33 @@ class SaleRepositoryImpl {
       print(stacktrace);
     }
   }
+
+  Future<Response?> fetchProducts(int org_id, String token,
+      {String product_sku = ""}) async {
+    try {
+      Map<String, dynamic> queryParams = {'org_id': org_id};
+
+      if (product_sku.isNotEmpty) {
+        queryParams['product_sku'] = product_sku;
+      }
+
+      Response response = await dio.get(
+        EndPoints.fetchProducts,
+        queryParameters: queryParams, // Use query parameters instead of data
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      return response;
+    } catch (e, stacktrace) {
+      print("Error fetching products: $e");
+      print(stacktrace);
+      return null; // Return null on failure
+    }
+  }
 }

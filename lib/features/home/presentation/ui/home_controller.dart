@@ -25,13 +25,15 @@ class HomeController extends StatefulWidget {
   State<HomeController> createState() => HomeControllerState();
 }
 
-class HomeControllerState extends State<HomeController> {
+class HomeControllerState extends State<HomeController>
+    with WidgetsBindingObserver {
   String name = "";
   String email = "";
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     initAuthCred();
     BlocProvider.of<HomeBloc>(context).add(HomeLoad());
   }

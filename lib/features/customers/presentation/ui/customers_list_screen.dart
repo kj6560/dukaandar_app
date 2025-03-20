@@ -35,40 +35,58 @@ class CustomersListScreen
               return ListView.builder(
                 itemCount: state.response.length,
                 itemBuilder: (context, index) {
-                  print(
-                      "https://duk.shiwkesh.in/${state.response[index].customerPic}");
                   return Container(
                     child: Card(
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Container(
-                                color: Colors.red,
-                                height: 150,
+                                color: Colors.white,
                                 width: MediaQuery.of(context).size.width / 3,
                                 child: Image.network(
-                                    fit: BoxFit.cover,
-                                    "https://duk.shiwkesh.in/${state.response[index].customerPic}"),
-                              ),
+                                  "https://duk.shiwkesh.in/${state.response[index].customerPic}",
+                                  fit: BoxFit.scaleDown,
+                                  loadingBuilder:
+                                      (context, child, loadingProgress) {
+                                    if (loadingProgress == null) return child;
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                        value: loadingProgress
+                                                    .expectedTotalBytes !=
+                                                null
+                                            ? loadingProgress
+                                                    .cumulativeBytesLoaded /
+                                                (loadingProgress
+                                                        .expectedTotalBytes ??
+                                                    1)
+                                            : null, // Show indeterminate progress if total bytes are unknown
+                                      ),
+                                    );
+                                  },
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Center(
+                                      child: Icon(Icons.error,
+                                          color: Colors
+                                              .red), // Show an error icon if the image fails to load
+                                    );
+                                  },
+                                ),
+                              )
                             ],
                           ),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Container(
-                                height: 160,
                                 width:
                                     MediaQuery.of(context).size.width * 2 / 3 -
                                         10,
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
@@ -116,6 +134,7 @@ class CustomersListScreen
               );
             }
           }),
+      selectedIndex: 4,
       onFabPressed: () {
         Navigator.popAndPushNamed(context, AppRoutes.newCustomer);
       },

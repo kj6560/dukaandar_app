@@ -3,7 +3,7 @@ part of new_sale_library;
 class NewSaleScreen extends WidgetView<NewSaleScreen, NewSaleControllerState> {
   NewSaleScreen(super.controllerState, {super.key});
 
-  final List<String> items = List.generate(200, (index) => 'Item $index');
+  bool _isDialogOpen = false;
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +19,8 @@ class NewSaleScreen extends WidgetView<NewSaleScreen, NewSaleControllerState> {
             listener: (context, salesState) {
               if (salesState is NewSalesFailure) {
                 _showOrderDialog(context, 2);
+              } else if (salesState is ProductDetailFetchSuccess) {
+                _showQuantityDialog(context, salesState.product);
               }
             },
           ),
@@ -48,7 +50,6 @@ class NewSaleScreen extends WidgetView<NewSaleScreen, NewSaleControllerState> {
                 ),
               );
             }
-
             return BlocBuilder<CustomersBloc, CustomersState>(
               builder: (context, customerState) {
                 if (customerState is LoadingCustomers) {
@@ -64,6 +65,7 @@ class NewSaleScreen extends WidgetView<NewSaleScreen, NewSaleControllerState> {
           },
         ),
       ),
+      selectedIndex: 1,
     );
   }
 
@@ -82,7 +84,9 @@ class NewSaleScreen extends WidgetView<NewSaleScreen, NewSaleControllerState> {
                 onPressed: () async {
                   String scannedSKU = await controllerState.scanBarcode();
                   if (scannedSKU.isNotEmpty) {
-                    _showQuantityDialog(context, scannedSKU);
+                    context
+                        .read<SalesBloc>()
+                        .add(FetchProductDetail(product_sku: scannedSKU));
                   }
                 },
                 child: Text('Scan Barcode', style: TextStyle(fontSize: 18)),
@@ -96,15 +100,148 @@ class NewSaleScreen extends WidgetView<NewSaleScreen, NewSaleControllerState> {
                 itemBuilder: (context, index) {
                   NewOrder newOrder = controllerState.orders[index];
                   return Card(
-                    child: ListTile(
-                      title: Text('Sku: ${newOrder.sku}'),
-                      subtitle: Text(
-                          'Qty: ${newOrder.quantity} | Discount: ${newOrder.discount}'),
-                      trailing: IconButton(
-                        icon: Icon(Icons.remove_circle, color: Colors.red),
-                        onPressed: () =>
-                            controllerState.removeOrderItem(newOrder),
-                      ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          newOrder.product_name,
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Text("Sku"),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Text(newOrder.sku),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Text("Qty"),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Text("${newOrder.quantity}"),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Text("Discount"),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.currency_rupee,
+                                      size: 14,
+                                    ),
+                                    Text("${newOrder.discount}")
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Text("Tax"),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.currency_rupee,
+                                      size: 14,
+                                    ),
+                                    Text("${newOrder.tax}")
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Text("Mrp"),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.currency_rupee,
+                                      size: 14,
+                                    ),
+                                    Text("${newOrder.product_mrp}")
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Divider(
+                          color: Colors.teal, // Customize color
+                          thickness: 1, // Customize thickness
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Text("Total"),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.currency_rupee,
+                                      size: 14,
+                                    ),
+                                    Text(
+                                        "${newOrder.product_mrp * newOrder.quantity}")
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   );
                 },
@@ -169,9 +306,11 @@ class NewSaleScreen extends WidgetView<NewSaleScreen, NewSaleControllerState> {
     );
   }
 
-  Future<void> _showQuantityDialog(BuildContext context, String sku) async {
+  Future<void> _showQuantityDialog(
+      BuildContext context, Product product) async {
     // Default quantity
-
+    if (_isDialogOpen) return; // Prevent opening multiple dialogs
+    _isDialogOpen = true;
     return showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -233,7 +372,9 @@ class NewSaleScreen extends WidgetView<NewSaleScreen, NewSaleControllerState> {
                 double tax = double.parse(controllerState.taxController.text);
                 if (quantity > 0) {
                   NewOrder newOrder = NewOrder(
-                      sku: sku,
+                      product_name: product.name,
+                      product_mrp: product.productMrp,
+                      sku: product.sku,
                       quantity: quantity,
                       discount: discount,
                       tax: tax);
@@ -247,7 +388,9 @@ class NewSaleScreen extends WidgetView<NewSaleScreen, NewSaleControllerState> {
           ],
         );
       },
-    );
+    ).then((_) {
+      _isDialogOpen = false; // Reset flag when dialog is closed
+    });
   }
 
   Future<void> _showOrderDialog(BuildContext context, int type) async {

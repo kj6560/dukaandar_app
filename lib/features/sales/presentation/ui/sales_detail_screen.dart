@@ -41,7 +41,6 @@ class SalesDetailScreen
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
-                        height: 200,
                         child: Card(
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -164,6 +163,7 @@ class SalesDetailScreen
               );
             }
           }),
+      selectedIndex: 1,
     );
   }
 

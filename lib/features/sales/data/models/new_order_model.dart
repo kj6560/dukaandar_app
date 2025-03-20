@@ -7,18 +7,25 @@ String newOrderToJson(List<NewOrder> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class NewOrder {
+  String product_name;
   String sku;
   double quantity;
   double discount;
   double tax;
+  double product_mrp;
 
   NewOrder(
-      {required this.sku,
+      {required this.product_name,
+      required this.sku,
       required this.quantity,
       required this.discount,
-      required this.tax});
+      required this.tax,
+      required this.product_mrp});
+
   factory NewOrder.fromJson(Map<String, dynamic> json) {
     return NewOrder(
+        product_name: json['product_name'],
+        product_mrp: json['product_mrp'],
         sku: json['sku'],
         quantity: double.parse(json['quantity'].toString()),
         discount: json['discount'],
@@ -26,6 +33,12 @@ class NewOrder {
   }
 
   Map<String, dynamic> toJson() {
-    return {'sku': sku, 'quantity': quantity, 'discount': discount, 'tax': tax};
+    return {
+      'product_name': product_name,
+      'sku': sku,
+      'quantity': quantity,
+      'discount': discount,
+      'tax': tax
+    };
   }
 }

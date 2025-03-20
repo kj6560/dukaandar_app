@@ -27,17 +27,19 @@ class _EntryState extends State<Entry> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Center(
-            child: CircularProgressIndicator(
-              color: Colors.teal,
+    return Scaffold(
+      body: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Center(
+              child: CircularProgressIndicator(
+                color: Colors.teal,
+              ),
             ),
-          ),
-          Center(child: Text("Initializing Plz wait..."))
-        ],
+            Center(child: Text("Initializing Plz wait..."))
+          ],
+        ),
       ),
     );
   }

@@ -130,6 +130,7 @@ class ProductListUi
               );
             }
           }),
+      selectedIndex: 3,
       onFabPressed: () {
         Navigator.popAndPushNamed(context, AppRoutes.newProduct);
       },

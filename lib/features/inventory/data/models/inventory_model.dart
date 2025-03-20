@@ -43,7 +43,9 @@ class InventoryModel {
       orgId: json['org_id'],
       productId: json['product_id'],
       quantity: double.parse(json['quantity'].toString()),
-      oldQuantity: double.parse(json['old_quantity'].toString()) ?? 0.0,
+      oldQuantity: json['old_quantity'] != null
+          ? double.parse(json['old_quantity'].toString())
+          : 0.0,
       balanceQuantity: double.parse(json['balance_quantity'].toString()),
       isActive: json['is_active'],
       createdAt: DateTime.parse(json['created_at']),

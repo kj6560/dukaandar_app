@@ -1,14 +1,16 @@
-import 'package:dukaandar/core/config/AppConstants.dart';
 import 'package:flutter/material.dart';
 
-class BaseScreen extends StatelessWidget {
+import '../routes.dart';
+
+class BaseScreen extends StatefulWidget {
   final String title;
   final String profilePicUrl;
   final Widget body;
   final String name;
   final String email;
-  final VoidCallback? onFabPressed; // Optional FAB action
-  final IconData fabIcon; // Default FAB icon
+  final VoidCallback? onFabPressed;
+  final IconData fabIcon;
+  final int selectedIndex; // ✅ Added selectedIndex
 
   const BaseScreen({
     Key? key,
@@ -17,9 +19,56 @@ class BaseScreen extends StatelessWidget {
     required this.profilePicUrl,
     required this.name,
     required this.email,
-    this.onFabPressed, // Default is null (optional)
-    this.fabIcon = Icons.add, // Default icon
+    this.onFabPressed,
+    this.fabIcon = Icons.add,
+    this.selectedIndex = 0, // Default to home
   }) : super(key: key);
+
+  @override
+  _BaseScreenState createState() => _BaseScreenState();
+}
+
+class _BaseScreenState extends State<BaseScreen> {
+  late int _selectedIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.selectedIndex;
+  }
+
+  void _onItemTapped(int index) {
+    if (_selectedIndex == index) return;
+
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    String route;
+    switch (index) {
+      case 0:
+        route = AppRoutes.home;
+        break;
+      case 1:
+        route = AppRoutes.listSales;
+        break;
+      case 2:
+        route = AppRoutes.listInventory;
+        break;
+      case 3:
+        route = AppRoutes.listProduct;
+
+        break;
+      case 4:
+        route = AppRoutes.listCustomers;
+
+        break;
+      default:
+        return;
+    }
+
+    Navigator.pushNamed(context, route);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +79,7 @@ class BaseScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.teal,
         title: Text(
-          title,
+          widget.title,
           style: const TextStyle(color: Colors.white),
         ),
         leading: IconButton(
@@ -41,16 +90,52 @@ class BaseScreen extends StatelessWidget {
         ),
       ),
       drawer: _buildDrawer(context),
-      body: body,
-
-      // Floating Action Button
-      floatingActionButton: onFabPressed != null
+      body: widget.body,
+      floatingActionButton: widget.onFabPressed != null
           ? FloatingActionButton(
-              onPressed: onFabPressed,
+              onPressed: widget.onFabPressed,
               backgroundColor: Colors.teal,
-              child: Icon(fabIcon, color: Colors.white),
+              child: Icon(widget.fabIcon, color: Colors.white),
             )
-          : null, // Hide FAB if no action is provided
+          : null,
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        selectedItemColor: Colors.teal,
+        unselectedItemColor: Colors.grey,
+        items: const [
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.home,
+                size: 30,
+              ),
+              label: "Home"),
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.new_label_rounded,
+                size: 30,
+              ),
+              label: "Orders"),
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.inventory,
+                size: 30,
+              ),
+              label: "Inventory"),
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.next_week_rounded,
+                size: 30,
+              ),
+              label: "Products"),
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.person,
+                size: 30,
+              ),
+              label: "Customers"),
+        ],
+      ),
     );
   }
 
@@ -61,13 +146,13 @@ class BaseScreen extends StatelessWidget {
           UserAccountsDrawerHeader(
             decoration: const BoxDecoration(color: Colors.teal),
             currentAccountPicture: CircleAvatar(
-              backgroundImage: NetworkImage(profilePicUrl),
+              backgroundImage: NetworkImage(widget.profilePicUrl),
             ),
             accountName: Text(
-              name,
+              widget.name,
               style: const TextStyle(fontSize: 20, color: Colors.white),
             ),
-            accountEmail: Text(email),
+            accountEmail: Text(widget.email),
           ),
           Expanded(
             child: ListView(
@@ -77,63 +162,24 @@ class BaseScreen extends StatelessWidget {
                   leading: const Icon(Icons.home),
                   title: const Text("Home"),
                   onTap: () {
-                    Navigator.popAndPushNamed(context, '/home');
+                    _onItemTapped(0);
                   },
                 ),
                 ListTile(
-                  leading: const Icon(Icons.home),
-                  title: const Text("About"),
+                  leading: const Icon(Icons.person),
+                  title: const Text("Profile"),
                   onTap: () {
-                    Navigator.popAndPushNamed(
-                      context,
-                      '/about',
-                    );
+                    _onItemTapped(1);
                   },
                 ),
                 ListTile(
                   leading: const Icon(Icons.settings),
                   title: const Text("Settings"),
                   onTap: () {
-                    Navigator.popAndPushNamed(context, '/settings');
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.settings),
-                  title: const Text("Printer Setup"),
-                  onTap: () {
-                    Navigator.popAndPushNamed(
-                      context,
-                      '/settings',
-                    );
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.logout),
-                  title: const Text("Logout"),
-                  onTap: () {
-                    Navigator.pop(context);
-                    // Add logout logic here
+                    _onItemTapped(2);
                   },
                 ),
               ],
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.all(2.0),
-            child: Column(
-              children: [
-                Text(
-                  "©2025 All Rights Reserved",
-                  style: TextStyle(color: Colors.grey),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 16.0),
-            child: Text(
-              AppConstants.companyName,
-              style: const TextStyle(color: Colors.grey),
             ),
           ),
         ],

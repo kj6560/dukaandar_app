@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:dukaandar/features/product/data/models/products_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
@@ -15,11 +17,13 @@ part 'sales_state.dart';
 
 class SalesBloc extends Bloc<SalesEvent, SalesState> {
   SaleRepositoryImpl saleRepositoryImpl = SaleRepositoryImpl();
+
   SalesBloc() : super(SalesInitial()) {
     on<LoadSalesList>(_loadSales);
     on<NewSale>(_newSales);
     on<NewSalesInit>(_salesInit);
     on<LoadSalesDetail>(_loadDetail);
+    on<FetchProductDetail>(_fetchProductDetail);
   }
 
   void _loadSales(LoadSalesList event, Emitter<SalesState> emit) async {
@@ -123,6 +127,39 @@ class SalesBloc extends Bloc<SalesEvent, SalesState> {
       print('Exception in bloc: $e');
       print('Stacktrace: $stacktrace');
       emit(LoadSalesFailure("An error occurred."));
+    }
+    return;
+  }
+
+  FutureOr<void> _fetchProductDetail(
+      FetchProductDetail event, Emitter<SalesState> emit) async {
+    try {
+      emit(FetchingProductDetail());
+      String userString = await authBox.get(HiveKeys.userBox);
+      String token = await authBox.get(HiveKeys.accessToken);
+      User user = User.fromJson(jsonDecode(userString));
+      String product_sku = event.product_sku;
+      final response = await saleRepositoryImpl
+          .fetchProducts(user.orgId!, token, product_sku: product_sku);
+      if (response == null || response.data == null) {
+        emit(ProductDetailFetchFailure("No response from server"));
+        return;
+      }
+      // Ensure data is always a Map<String, dynamic>
+      final data = response.data['data'] is String
+          ? jsonDecode(response.data['data'])
+          : response.data['data'];
+      final Product product = Product.fromJson(data);
+
+      if (response.statusCode == 401) {
+        emit(ProductDetailFetchFailure("Login failed."));
+        return;
+      }
+      emit(ProductDetailFetchSuccess(product));
+    } catch (e, stacktrace) {
+      print('Exception in bloc: $e');
+      print('Stacktrace: $stacktrace');
+      emit(ProductDetailFetchFailure("An error occurred."));
     }
     return;
   }

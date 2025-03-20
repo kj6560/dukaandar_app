@@ -29,3 +29,8 @@ class LoadSalesDetail extends SalesEvent {
   final int orderId;
   const LoadSalesDetail({required this.orderId});
 }
+
+class FetchProductDetail extends SalesEvent {
+  final String product_sku;
+  FetchProductDetail({required this.product_sku});
+}

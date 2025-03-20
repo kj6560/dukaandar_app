@@ -3,6 +3,7 @@ library new_sale_library;
 import 'dart:convert';
 
 import 'package:dukaandar/features/customers/presentation/bloc/customers_bloc.dart';
+import 'package:dukaandar/features/product/data/models/products_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,6 +36,8 @@ class NewSaleControllerState extends State<NewSaleController> {
           '#ff6666', 'Cancel', true, ScanMode.BARCODE);
       print(barcodeScanRes);
       //Handle the scanned barcode result
+      BlocProvider.of<SalesBloc>(context)
+          .add(FetchProductDetail(product_sku: barcodeScanRes));
       setState(() {
         _scanBarcode = barcodeScanRes;
       });
@@ -45,9 +48,7 @@ class NewSaleControllerState extends State<NewSaleController> {
     if (!_scanBarcode.isNotEmpty) {
       return _scanBarcode;
     }
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
+
     if (!mounted) return _scanBarcode;
     return _scanBarcode;
   }
@@ -61,7 +62,7 @@ class NewSaleControllerState extends State<NewSaleController> {
   TextEditingController taxController = TextEditingController();
   String name = "";
   String email = "";
-  String? selectedValue; // Holds the selected dropdown value
+  String? selectedValue = "Cash"; // Holds the selected dropdown value
   List<String> dropdownItems = ["Payment Mode", "Cash", "Credit"];
   Customer? selectedUser;
 
@@ -90,6 +91,8 @@ class NewSaleControllerState extends State<NewSaleController> {
       if (existingIndex != -1) {
         // SKU exists, update the quantity
         orders[existingIndex] = NewOrder(
+            product_name: orders[existingIndex].product_name,
+            product_mrp: orders[existingIndex].product_mrp,
             sku: orders[existingIndex].sku,
             quantity: orders[existingIndex].quantity + newOrder.quantity,
             discount: orders[existingIndex].discount,
