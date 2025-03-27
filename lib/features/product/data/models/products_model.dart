@@ -1,7 +1,7 @@
 import 'dart:convert';
 
+import 'package:dukaandar/features/product/data/models/AppliedScheme.dart';
 import 'package:dukaandar/features/product/data/models/product_uom.dart';
-import 'package:dukaandar/features/schemes/data/models/scheme_model.dart';
 
 List<Product> productFromJson(String str) =>
     List<Product>.from(json.decode(str).map((x) => Product.fromJson(x)));
@@ -21,7 +21,7 @@ class Product {
   String updatedAt;
   ProductPrice? price;
   Uom? uom;
-  List<Scheme>? schemes;
+  List<AppliedScheme>? schemes;
 
   Product({
     required this.id,
@@ -55,7 +55,8 @@ class Product {
           json['price'] != null ? ProductPrice.fromJson(json['price']) : null,
       uom: json['uom'] != null ? Uom.fromJson(json['uom']) : null,
       schemes: json['schemes'] != null
-          ? List<Scheme>.from(json['schemes'].map((x) => Scheme.fromJson(x)))
+          ? List<AppliedScheme>.from(
+              json['schemes'].map((x) => AppliedScheme.fromJson(x)))
           : [],
     );
   }
