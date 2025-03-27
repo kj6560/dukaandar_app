@@ -114,7 +114,7 @@ class SalesListUi extends WidgetView<SalesListUi, SalesListControllerState> {
           }),
       selectedIndex: 1,
       onFabPressed: () {
-        Navigator.popAndPushNamed(context, AppRoutes.newSale);
+        Navigator.pushNamed(context, AppRoutes.newSale);
       },
     );
   }

@@ -48,16 +48,18 @@ class Scheme {
       orgId: json['org_id'],
       schemeName: json['scheme_name'],
       type: json['type'],
-      value: json['value'],
+      value: json['value'].toString(),
       duration: json['duration'],
       startDate: DateTime.parse(json['start_date']),
       endDate: DateTime.parse(json['end_date']),
       isActive: json['is_active'],
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
-      bundleProducts: (json['bundle_products'] as List)
-          .map((item) => Product.fromJson(item))
-          .toList(),
+      bundleProducts: (json['bundle_products'] is List)
+          ? (json['bundle_products'] as List)
+              .map((item) => Product.fromJson(item))
+              .toList()
+          : [], // ✅ Fix: Ensure `bundleProducts` is always a List<Product>
       product: Product.fromJson(json['product']),
     );
   }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dukaandar/features/product/data/models/product_uom.dart';
+import 'package:dukaandar/features/schemes/data/models/scheme_model.dart';
 
 List<Product> productFromJson(String str) =>
     List<Product>.from(json.decode(str).map((x) => Product.fromJson(x)));
@@ -14,12 +15,13 @@ class Product {
   String name;
   String sku;
   double productMrp;
-  double basePrice;
+  double? basePrice;
   int isActive;
   String createdAt;
   String updatedAt;
-  ProductPrice? price; // ✅ Added ProductPrice model reference
-  Uom? uom; // ✅ Added ProductUom model reference
+  ProductPrice? price;
+  Uom? uom;
+  List<Scheme>? schemes;
 
   Product({
     required this.id,
@@ -28,11 +30,12 @@ class Product {
     required this.sku,
     required this.productMrp,
     required this.isActive,
-    required this.basePrice,
+    this.basePrice,
     this.createdAt = "",
     this.updatedAt = "",
-    this.price, // ✅ New price field
-    this.uom, // ✅ New UOM field
+    this.price,
+    this.uom,
+    this.schemes,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -42,18 +45,18 @@ class Product {
       name: json['name'],
       sku: json['sku'],
       productMrp: double.parse(json['product_mrp'].toString()),
-      basePrice: json['price'] != null
-          ? double.parse(json['price']['price'].toString())
-          : 0.0, // ✅ Extract price
+      basePrice: json['base_price'] != null
+          ? double.tryParse(json['base_price'].toString())
+          : null,
       isActive: json['is_active'],
       createdAt: json['created_at'] ?? "",
       updatedAt: json['updated_at'] ?? "",
-      price: json['price'] != null
-          ? ProductPrice.fromJson(json['price'])
-          : null, // ✅ Parse price if available
-      uom: json['uom'] != null
-          ? Uom.fromJson(json['uom'])
-          : null, // ✅ Parse UOM if available
+      price:
+          json['price'] != null ? ProductPrice.fromJson(json['price']) : null,
+      uom: json['uom'] != null ? Uom.fromJson(json['uom']) : null,
+      schemes: json['schemes'] != null
+          ? List<Scheme>.from(json['schemes'].map((x) => Scheme.fromJson(x)))
+          : [],
     );
   }
 
@@ -68,37 +71,41 @@ class Product {
       'is_active': isActive,
       'created_at': createdAt,
       'updated_at': updatedAt,
-      'price': price?.toJson(), // ✅ Include price in JSON response
-      'uom': uom?.toJson(), // ✅ Include UOM in JSON response
+      'price': price?.toJson(),
+      'uom': uom?.toJson(),
+      'schemes': schemes != null
+          ? List<dynamic>.from(schemes!.map((x) => x.toJson()))
+          : [],
     };
   }
 }
 
-// ✅ Define ProductPrice model
 class ProductPrice {
-  int id;
-  int productId;
-  double price;
-  int uomId;
-  int isActive;
-  String createdAt;
-  String updatedAt;
+  int? id;
+  int? productId;
+  double? price;
+  int? uomId;
+  int? isActive;
+  String? createdAt;
+  String? updatedAt;
 
   ProductPrice({
-    required this.id,
-    required this.productId,
-    required this.price,
-    required this.uomId,
-    required this.isActive,
-    required this.createdAt,
-    required this.updatedAt,
+    this.id,
+    this.productId,
+    this.price,
+    this.uomId,
+    this.isActive,
+    this.createdAt,
+    this.updatedAt,
   });
 
   factory ProductPrice.fromJson(Map<String, dynamic> json) {
     return ProductPrice(
       id: json['id'],
       productId: json['product_id'],
-      price: double.parse(json['price'].toString()),
+      price: json['price'] != null
+          ? double.tryParse(json['price'].toString())
+          : null,
       uomId: json['uom_id'],
       isActive: json['is_active'],
       createdAt: json['created_at'] ?? "",
@@ -118,5 +125,3 @@ class ProductPrice {
     };
   }
 }
-
-// ✅ Define ProductUom model

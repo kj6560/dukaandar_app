@@ -31,6 +31,7 @@ class BaseScreen extends StatefulWidget {
 }
 
 class _BaseScreenState extends State<BaseScreen> {
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   late int _selectedIndex;
 
   @override
@@ -67,13 +68,15 @@ class _BaseScreenState extends State<BaseScreen> {
         return;
     }
 
+    // Close drawer before navigation
+    //Navigator.pop(context);
+
+    // Use pushReplacementNamed to avoid stacking
     Navigator.pushNamed(context, route);
   }
 
   @override
   Widget build(BuildContext context) {
-    final scaffoldKey = GlobalKey<ScaffoldState>();
-
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(

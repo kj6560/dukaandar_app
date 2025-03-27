@@ -33,10 +33,11 @@ class SchemeRepositoryImpl {
 
   Future<Response?> fetchSchemes(int org_id, String token, {int id = 0}) async {
     try {
-      var body = {'org_id': org_id};
+      var body = {};
       if (id != 0) {
         body['id'] = id;
       }
+      print("hitting: ${EndPoints.fetchSchemes}");
       Response response = await dio.get(
         EndPoints.fetchSchemes,
         options: Options(
@@ -56,7 +57,7 @@ class SchemeRepositoryImpl {
   }
 
   Future<Response?> createOrUpdateScheme(
-      int org_id, String token, String payload) async {
+      int org_id, String token, Map<String, dynamic> payload) async {
     try {
       Response response = await dio.post(
         EndPoints.updateScheme,
@@ -69,6 +70,7 @@ class SchemeRepositoryImpl {
         ),
         data: jsonEncode(payload),
       );
+      print(response.toString());
       return response;
     } catch (e, stacktrace) {
       print(e.toString());
@@ -90,6 +92,31 @@ class SchemeRepositoryImpl {
           },
         ),
         data: jsonEncode(payload),
+      );
+      return response;
+    } catch (e, stacktrace) {
+      print(e.toString());
+      print(stacktrace);
+    }
+  }
+
+  Future<Response?> fetchProducts(int org_id, String token,
+      {int id = 0}) async {
+    try {
+      var body = {'org_id': org_id};
+      if (id != 0) {
+        body['product_id'] = id;
+      }
+      Response response = await dio.get(
+        EndPoints.fetchProducts,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+        data: jsonEncode(body),
       );
       return response;
     } catch (e, stacktrace) {
