@@ -21,7 +21,7 @@ class Product {
   String updatedAt;
   ProductPrice? price;
   Uom? uom;
-  List<AppliedScheme>? schemes;
+  List<AppliedScheme> schemes;
 
   Product({
     required this.id,
@@ -30,12 +30,12 @@ class Product {
     required this.sku,
     required this.productMrp,
     required this.isActive,
-    this.basePrice,
+    required this.basePrice,
     this.createdAt = "",
     this.updatedAt = "",
-    this.price,
-    this.uom,
-    this.schemes,
+    required this.price,
+    required this.uom,
+    required this.schemes,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {

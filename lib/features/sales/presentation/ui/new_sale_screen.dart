@@ -66,6 +66,14 @@ class NewSaleScreen extends WidgetView<NewSaleScreen, NewSaleControllerState> {
         ),
       ),
       selectedIndex: 1,
+      onFabPressed: () async {
+        String scannedSKU = await controllerState.scanBarcode();
+        if (scannedSKU.isNotEmpty) {
+          context
+              .read<SalesBloc>()
+              .add(FetchProductDetail(product_sku: scannedSKU));
+        }
+      },
     );
   }
 
@@ -76,179 +84,6 @@ class NewSaleScreen extends WidgetView<NewSaleScreen, NewSaleControllerState> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            // 🔹 Barcode Scanner Button
-            SizedBox(
-              width: 150,
-              height: 40,
-              child: ElevatedButton(
-                onPressed: () async {
-                  String scannedSKU = await controllerState.scanBarcode();
-                  if (scannedSKU.isNotEmpty) {
-                    context
-                        .read<SalesBloc>()
-                        .add(FetchProductDetail(product_sku: scannedSKU));
-                  }
-                },
-                child: Text('Scan Barcode', style: TextStyle(fontSize: 18)),
-              ),
-            ),
-
-            // 🔹 Orders List
-            Expanded(
-              child: ListView.builder(
-                itemCount: controllerState.orders.length,
-                itemBuilder: (context, index) {
-                  NewOrder newOrder = controllerState.orders[index];
-                  return Card(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          newOrder.product_name,
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(2.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Text("Sku"),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Text(newOrder.sku),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(2.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Text("Qty"),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Text("${newOrder.quantity}"),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(2.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Text("Discount"),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.currency_rupee,
-                                      size: 14,
-                                    ),
-                                    Text("${newOrder.discount}")
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(2.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Text("Tax"),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.currency_rupee,
-                                      size: 14,
-                                    ),
-                                    Text("${newOrder.tax}")
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(2.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Text("Mrp"),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.currency_rupee,
-                                      size: 14,
-                                    ),
-                                    Text("${newOrder.product_mrp}")
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Divider(
-                          color: Colors.teal, // Customize color
-                          thickness: 1, // Customize thickness
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(2.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Text("Total"),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.currency_rupee,
-                                      size: 14,
-                                    ),
-                                    Text(
-                                        "${newOrder.product_mrp * newOrder.quantity}")
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-
-            // 🔹 Payment Mode Dropdown
             DropdownButtonFormField<String>(
               decoration: InputDecoration(
                 labelText: 'Select Payment Mode',
@@ -265,10 +100,7 @@ class NewSaleScreen extends WidgetView<NewSaleScreen, NewSaleControllerState> {
                 controllerState.updatePaymentMode(newValue);
               },
             ),
-
-            SizedBox(height: 10),
-
-            // 🔹 Customer Dropdown
+            SizedBox(height: 30),
             DropdownButtonFormField<Customer>(
               decoration: InputDecoration(
                 labelText: 'Select Customer',
@@ -288,10 +120,111 @@ class NewSaleScreen extends WidgetView<NewSaleScreen, NewSaleControllerState> {
                 controllerState.selectedUser = selectedCustomer;
               },
             ),
-
-            SizedBox(height: 10),
-
-            // 🔹 Submit Button
+            SizedBox(
+              height: 40,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Text(
+                      "Products",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: controllerState.orders.length,
+                itemBuilder: (context, index) {
+                  NewOrder newOrder = controllerState.orders[index];
+                  List<AppliedScheme> schemes = [];
+                  if (newOrder.schemes != null) {
+                    schemes = newOrder.schemes;
+                  } else {
+                    print("scheme not present");
+                  }
+                  return Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment
+                            .start, // changed to align to start
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Product name column with expanded width and wrapping text
+                              Expanded(
+                                flex: 2,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text("Product Name"),
+                                    Text(
+                                      "${newOrder.product_name}",
+                                      softWrap: true,
+                                      overflow: TextOverflow.visible,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    if (schemes.length > 0)
+                                      Column(
+                                        children: [
+                                          Text(
+                                            "${schemes.length} scheme applied",
+                                            softWrap: true,
+                                            overflow: TextOverflow.visible,
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          ElevatedButton(
+                                              onPressed: () {
+                                                _showSchemeDialog(
+                                                    context, schemes);
+                                              },
+                                              child: Text("See"))
+                                        ],
+                                      ),
+                                  ],
+                                ),
+                              ),
+                              // Spacer between name and details
+                              const SizedBox(width: 8),
+                              // Other info columns
+                              Expanded(
+                                flex: 3,
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: [
+                                      _infoColumn(
+                                          "Qty", "${newOrder.quantity}"),
+                                      _infoColumn(
+                                          "Mrp", "${newOrder.product_mrp}"),
+                                      _infoColumn(
+                                          "Disc", "${newOrder.discount}"),
+                                      _infoColumn("Tax", "${newOrder.tax}"),
+                                      _infoColumn(
+                                        "Total",
+                                        "${(newOrder.quantity * newOrder.product_mrp - newOrder.discount + newOrder.tax).toStringAsFixed(2)}",
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            SizedBox(height: 50),
             SizedBox(
               width: MediaQuery.of(context).size.width - 50,
               height: 40,
@@ -302,6 +235,18 @@ class NewSaleScreen extends WidgetView<NewSaleScreen, NewSaleControllerState> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _infoColumn(String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Column(
+        children: [
+          Text(title),
+          Text(value),
+        ],
       ),
     );
   }
@@ -377,6 +322,7 @@ class NewSaleScreen extends WidgetView<NewSaleScreen, NewSaleControllerState> {
                       sku: product.sku,
                       quantity: quantity,
                       discount: discount,
+                      schemes: product.schemes != null ? product.schemes : [],
                       tax: tax);
                   controllerState.updateOrder(newOrder);
                   print(controllerState.orders.length);
@@ -412,6 +358,71 @@ class NewSaleScreen extends WidgetView<NewSaleScreen, NewSaleControllerState> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close dialog without saving
+              },
+              child: Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showSchemeDialog(
+      BuildContext context, List<AppliedScheme> schemes) async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Applied Schemes"),
+          content: Container(
+            width: double.maxFinite,
+            height: 300,
+            child: ListView.builder(
+              itemCount: schemes.length,
+              itemBuilder: (context, index) {
+                final scheme = schemes[index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        scheme.schemeName,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      Text("Type: ${scheme.schemeType}"),
+                      Text("Value: ${scheme.schemeValue}"),
+                      if (scheme.bundleProducts.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: scheme.bundleProducts.map((bp) {
+                              return Text(
+                                  "- ${bp.product.name} x${bp.quantity}");
+                            }).toList(),
+                          ),
+                        ),
+                      Divider(),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
               },
               child: Text("Cancel"),
             ),

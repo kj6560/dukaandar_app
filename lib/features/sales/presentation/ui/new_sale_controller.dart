@@ -3,6 +3,7 @@ library new_sale_library;
 import 'dart:convert';
 
 import 'package:dukaandar/features/customers/presentation/bloc/customers_bloc.dart';
+import 'package:dukaandar/features/product/data/models/AppliedScheme.dart';
 import 'package:dukaandar/features/product/data/models/products_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
@@ -96,7 +97,8 @@ class NewSaleControllerState extends State<NewSaleController> {
             sku: orders[existingIndex].sku,
             quantity: orders[existingIndex].quantity + newOrder.quantity,
             discount: orders[existingIndex].discount,
-            tax: orders[existingIndex].tax);
+            tax: orders[existingIndex].tax,
+            schemes: orders[existingIndex].schemes);
       } else {
         // SKU doesn't exist, add a new order
         orders.add(newOrder);

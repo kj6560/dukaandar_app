@@ -73,12 +73,10 @@ class SalesBloc extends Bloc<SalesEvent, SalesState> {
         emit(NewSalesFailure("No response from server"));
         return;
       }
-      print(response);
       // Ensure data is always a Map<String, dynamic>
       final data = response.data['data'] is String
           ? jsonDecode(response.data['data'])
           : response.data['data'];
-      print(data);
       final SalesModel order = SalesModel.fromJson(data);
 
       if (response.statusCode == 401) {
@@ -139,6 +137,7 @@ class SalesBloc extends Bloc<SalesEvent, SalesState> {
       String token = await authBox.get(HiveKeys.accessToken);
       User user = User.fromJson(jsonDecode(userString));
       String product_sku = event.product_sku;
+      print(product_sku);
       final response = await saleRepositoryImpl
           .fetchProducts(user.orgId!, token, product_sku: product_sku);
       if (response == null || response.data == null) {
@@ -149,6 +148,7 @@ class SalesBloc extends Bloc<SalesEvent, SalesState> {
       final data = response.data['data'] is String
           ? jsonDecode(response.data['data'])
           : response.data['data'];
+      print(data);
       final Product product = Product.fromJson(data);
 
       if (response.statusCode == 401) {

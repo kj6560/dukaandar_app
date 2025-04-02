@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import '../../../product/data/models/AppliedScheme.dart';
+
 List<NewOrder> newOrderFromJson(String str) =>
     List<NewOrder>.from(json.decode(str).map((x) => NewOrder.fromJson(x)));
 
@@ -13,6 +15,7 @@ class NewOrder {
   double discount;
   double tax;
   double product_mrp;
+  List<AppliedScheme> schemes;
 
   NewOrder(
       {required this.product_name,
@@ -20,7 +23,8 @@ class NewOrder {
       required this.quantity,
       required this.discount,
       required this.tax,
-      required this.product_mrp});
+      required this.product_mrp,
+      required this.schemes});
 
   factory NewOrder.fromJson(Map<String, dynamic> json) {
     return NewOrder(
@@ -29,7 +33,8 @@ class NewOrder {
         sku: json['sku'],
         quantity: double.parse(json['quantity'].toString()),
         discount: json['discount'],
-        tax: json['tax']);
+        tax: json['tax'],
+        schemes: json['schemes']);
   }
 
   Map<String, dynamic> toJson() {
@@ -38,7 +43,8 @@ class NewOrder {
       'sku': sku,
       'quantity': quantity,
       'discount': discount,
-      'tax': tax
+      'tax': tax,
+      'schemes': schemes
     };
   }
 }
