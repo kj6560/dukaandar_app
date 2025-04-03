@@ -4,8 +4,6 @@ class NewProductScreen
     extends WidgetView<NewProductScreen, NewProductControllerState> {
   NewProductScreen(super.controllerState, {super.key});
 
-  final List<String> items = List.generate(200, (index) => 'Item $index');
-
   @override
   Widget build(BuildContext context) {
     return BaseScreen(

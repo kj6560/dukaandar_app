@@ -53,7 +53,7 @@ class ProductDetailControllerState extends State<ProductDetailController> {
         });
 
         BlocProvider.of<ProductBloc>(context)
-            .add(LoadProductDetail(product_id: int.parse(product_id)));
+            .add(LoadProductDetail(product_id: product_id));
       }
     });
   }

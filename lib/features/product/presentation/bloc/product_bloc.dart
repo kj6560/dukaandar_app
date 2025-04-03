@@ -104,10 +104,10 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       String userString = await authBox.get(HiveKeys.userBox);
       String token = await authBox.get(HiveKeys.accessToken);
       User user = User.fromJson(jsonDecode(userString));
-      int product_id = event.product_id;
+      String product_id = event.product_id;
       print('user org id: ${user.orgId}');
       final response = await productRepositoryImpl
-          .fetchProducts(user.orgId!, token, id: product_id);
+          .fetchProducts(user.orgId!, token, id: product_id.toString());
       if (response == null || response.data == null) {
         emit(LoadProductDetailFailure("No response from server"));
         return;

@@ -10,11 +10,11 @@ class ProductRepositoryImpl {
   ProductRepositoryImpl();
 
   Future<Response?> fetchProducts(int org_id, String token,
-      {int id = 0}) async {
+      {String id = ""}) async {
     try {
       var body = {'org_id': org_id};
-      if (id != 0) {
-        body['product_id'] = id;
+      if (id.isNotEmpty) {
+        body['product_id'] = int.parse(id);
       }
       Response response = await dio.get(
         EndPoints.fetchProducts,

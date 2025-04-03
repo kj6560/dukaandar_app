@@ -12,6 +12,7 @@ import '../features/customers/presentation/ui/new_customer_controller.dart';
 import '../features/home/presentation/ui/entry.dart';
 import '../features/inventory/presentation/ui/inventory_list_controller.dart';
 import '../features/inventory/presentation/ui/new_inventory_controller.dart';
+import '../features/product/presentation/ui/edit_product_controller.dart';
 import '../features/product/presentation/ui/new_product_controller.dart';
 import '../features/product/presentation/ui/product_detail_controller.dart';
 import '../features/product/presentation/ui/product_list_controller.dart';
@@ -31,6 +32,7 @@ class AppRoutes {
   static const String listCustomers = '/list_customers';
   static const String listSchemes = '/list_schemes';
   static const String newProduct = '/new_product';
+  static const String editProduct = '/edit_product';
   static const String newSale = '/new_sale';
   static const String newInventory = '/new_Inventory';
   static const String newCustomer = '/new_customer';
@@ -63,6 +65,15 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => SettingsController());
       case newProduct:
         return MaterialPageRoute(builder: (_) => NewProductController());
+      case editProduct:
+        return MaterialPageRoute(
+          builder: (context) {
+            final args =
+                settings.arguments as Map<String, dynamic>?; // Get arguments
+            return EditProductController(); // Pass arguments if necessary
+          },
+          settings: settings, // Ensure arguments are attached to the route
+        );
       case newSale:
         return MaterialPageRoute(builder: (_) => NewSaleController());
       case newCustomer:

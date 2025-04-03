@@ -26,8 +26,25 @@ class AddNewProduct extends ProductEvent {
       required this.uom_id});
 }
 
+class UpdateProduct extends ProductEvent {
+  final int id;
+  final String name;
+  final double price;
+  final double base_price;
+  final String sku;
+  final int uom_id;
+
+  const UpdateProduct(
+      {required this.id,
+      required this.name,
+      required this.price,
+      required this.sku,
+      required this.base_price,
+      required this.uom_id});
+}
+
 class LoadProductDetail extends ProductEvent {
-  final int product_id;
+  final String product_id;
 
   const LoadProductDetail({required this.product_id});
 }
