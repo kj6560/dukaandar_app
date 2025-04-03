@@ -8,6 +8,7 @@ import 'package:dukaandar/features/schemes/presentation/ui/scheme_list_controlle
 import 'package:flutter/material.dart';
 
 import '../features/Settings/presentation/ui/settings_controller.dart';
+import '../features/customers/presentation/ui/edit_customer_controller.dart';
 import '../features/customers/presentation/ui/new_customer_controller.dart';
 import '../features/home/presentation/ui/entry.dart';
 import '../features/inventory/presentation/ui/inventory_list_controller.dart';
@@ -36,6 +37,7 @@ class AppRoutes {
   static const String newSale = '/new_sale';
   static const String newInventory = '/new_Inventory';
   static const String newCustomer = '/new_customer';
+  static const String editCustomer = '/edit_customer';
   static const String newScheme = '/new_scheme';
   static const String productDetails = '/product_details';
   static const String salesDetails = '/sales_details';
@@ -71,6 +73,15 @@ class AppRoutes {
             final args =
                 settings.arguments as Map<String, dynamic>?; // Get arguments
             return EditProductController(); // Pass arguments if necessary
+          },
+          settings: settings, // Ensure arguments are attached to the route
+        );
+      case editCustomer:
+        return MaterialPageRoute(
+          builder: (context) {
+            final args =
+                settings.arguments as Map<String, dynamic>?; // Get arguments
+            return EditCustomerController(); // Pass arguments if necessary
           },
           settings: settings, // Ensure arguments are attached to the route
         );

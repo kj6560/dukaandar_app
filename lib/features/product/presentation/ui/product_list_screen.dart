@@ -50,42 +50,61 @@ class ProductListUi
                             arguments: {"product_id": product.id});
                       },
                       child: Container(
-                        height: 100,
                         child: Padding(
                           padding: const EdgeInsets.all(2.0),
                           child: Card(
                             child: Padding(
                               padding: const EdgeInsets.all(2.0),
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                  Column(
                                     children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(2.0),
-                                        child: Text(
-                                          product.name,
-                                          style: TextStyle(fontSize: 18),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(2.0),
-                                        child: Text(
-                                          product.sku,
-                                          style: TextStyle(fontSize: 18),
-                                        ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(2.0),
+                                            child: Text(
+                                              product.name,
+                                              style: TextStyle(fontSize: 18),
+                                            ),
+                                          )
+                                        ],
                                       ),
                                       Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.start,
                                         children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(2.0),
+                                            child: Text(
+                                              "Sku: ",
+                                              style: TextStyle(fontSize: 18),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(2.0),
+                                            child: Text(
+                                              product.sku,
+                                              style: TextStyle(fontSize: 18),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(2.0),
+                                            child: Text(
+                                              "Price: ",
+                                              style: TextStyle(fontSize: 18),
+                                            ),
+                                          ),
                                           Padding(
                                             padding: const EdgeInsets.all(2.0),
                                             child: Icon(
@@ -103,7 +122,7 @@ class ProductListUi
                                         ],
                                       )
                                     ],
-                                  )
+                                  ),
                                 ],
                               ),
                             ),

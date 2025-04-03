@@ -71,4 +71,13 @@ class ProductDetailControllerState extends State<ProductDetailController> {
   Widget build(BuildContext context) {
     return ProductDetailScreen(this);
   }
+
+  void deleteProduct() {
+    BlocProvider.of<ProductBloc>(context)
+        .add(DeleteProduct(id: int.parse(product_id)));
+  }
+
+  void postDelete() {
+    Navigator.popAndPushNamed(context, AppRoutes.home);
+  }
 }

@@ -23,6 +23,7 @@ class LoadingCustomers extends CustomersState {
 
 class NewCustomerCreateSuccess extends CustomersState {
   final Customer customer;
+
   NewCustomerCreateSuccess(this.customer);
 }
 
@@ -33,3 +34,22 @@ class NewCustomerCreateFailure extends CustomersState {
 }
 
 class CreatingNewCustomer extends CustomersState {}
+
+class UpdatingCustomer extends CustomersState {}
+
+class UpdateCustomerSuccess extends CustomersState {
+  final Customer customer;
+
+  UpdateCustomerSuccess(this.customer);
+}
+
+class UpdateCustomerFailure extends CustomersState {
+  final String error;
+
+  UpdateCustomerFailure(this.error);
+}
+
+class CustomerLoaded extends CustomersState {
+  final Customer customer;
+  CustomerLoaded(this.customer);
+}

@@ -107,4 +107,25 @@ class ProductRepositoryImpl {
       print(stacktrace);
     }
   }
+
+  Future<Response?> deleteProduct(String token, int id) async {
+    try {
+      var body = {'id': id};
+      Response response = await dio.get(
+        EndPoints.deleteProduct,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+        data: jsonEncode(body),
+      );
+      return response;
+    } catch (e, stacktrace) {
+      print(e.toString());
+      print(stacktrace);
+    }
+  }
 }

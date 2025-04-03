@@ -78,3 +78,17 @@ class GenerateBarcodeFailure extends ProductState {
 }
 
 class GeneratingBarcode extends ProductState {}
+
+class DeleteProductSuccess extends ProductState {
+  final Product product;
+
+  DeleteProductSuccess(this.product);
+}
+
+class DeleteProductFailure extends ProductState {
+  final String error;
+
+  DeleteProductFailure(this.error);
+}
+
+class DeletingProduct extends ProductState {}

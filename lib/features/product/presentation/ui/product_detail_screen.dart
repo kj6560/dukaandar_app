@@ -12,6 +12,9 @@ class ProductDetailScreen
       body: BlocConsumer<ProductBloc, ProductState>(
         listener: (context, state) {
           // TODO: implement listener
+          if (state is DeleteProductSuccess) {
+            controllerState.postDelete();
+          }
         },
         builder: (context, state) {
           if (state is LoadingProductDetail) {
@@ -145,6 +148,27 @@ class ProductDetailScreen
                             )
                           ],
                         ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                              onPressed: () {
+                                Navigator.popAndPushNamed(
+                                    context, AppRoutes.editProduct, arguments: {
+                                  "product_id": controllerState.product_id
+                                });
+                              },
+                              child: Text("Edit")),
+                          SizedBox(
+                            width: 50,
+                          ),
+                          ElevatedButton(
+                              onPressed: () {
+                                controllerState.deleteProduct();
+                              },
+                              child: Text("Delete")),
+                        ],
                       )
                     ],
                   ),
@@ -172,19 +196,6 @@ class ProductDetailScreen
       profilePicUrl: 'https://via.placeholder.com/150',
       name: controllerState.name,
       email: controllerState.email,
-      appBarActions: [
-        IconButton(
-          icon: Icon(
-            Icons.edit,
-            color: Colors.white,
-          ),
-          onPressed: () {
-            Navigator.popAndPushNamed(context, AppRoutes.editProduct,
-                arguments: {"product_id": controllerState.product_id});
-            print("schemes clicked");
-          },
-        ),
-      ],
     );
   }
 }
