@@ -1,5 +1,12 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
+import '../../features/Auth/data/User.dart';
+import '../config/config.dart';
+import '../config/endpoints.dart';
+import '../local/hive_constants.dart';
 import '../routes.dart';
 
 class BaseScreen extends StatefulWidget {
@@ -33,11 +40,22 @@ class BaseScreen extends StatefulWidget {
 class _BaseScreenState extends State<BaseScreen> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   late int _selectedIndex;
+  String profilePic = "";
+  User? user;
 
   @override
   void initState() {
     super.initState();
+    initAuthCred();
     _selectedIndex = widget.selectedIndex;
+  }
+
+  void initAuthCred() async {
+    String userJson = authBox.get(HiveKeys.userBox);
+    User user = User.fromJson(jsonDecode(userJson));
+    setState(() {
+      profilePic = user!.profilePic!;
+    });
   }
 
   void _onItemTapped(int index) {
@@ -69,7 +87,7 @@ class _BaseScreenState extends State<BaseScreen> {
     }
 
     // Close drawer before navigation
-    //Navigator.pop(context);
+    Navigator.pop(context);
 
     // Use pushReplacementNamed to avoid stacking
     Navigator.pushNamed(context, route);
@@ -102,24 +120,24 @@ class _BaseScreenState extends State<BaseScreen> {
               child: Icon(widget.fabIcon, color: Colors.white),
             )
           : null,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedItemColor: Colors.teal,
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.home, size: 30), label: "Home"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.new_label_rounded, size: 30), label: "Orders"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.inventory, size: 30), label: "Inventory"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.next_week_rounded, size: 30), label: "Products"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person, size: 30), label: "Customers"),
-        ],
-      ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   currentIndex: _selectedIndex,
+      //   onTap: _onItemTapped,
+      //   selectedItemColor: Colors.teal,
+      //   unselectedItemColor: Colors.grey,
+      //   items: const [
+      //     BottomNavigationBarItem(
+      //         icon: Icon(Icons.home, size: 30), label: "Home"),
+      //     BottomNavigationBarItem(
+      //         icon: Icon(Icons.new_label_rounded, size: 30), label: "Orders"),
+      //     BottomNavigationBarItem(
+      //         icon: Icon(Icons.inventory, size: 30), label: "Inventory"),
+      //     BottomNavigationBarItem(
+      //         icon: Icon(Icons.next_week_rounded, size: 30), label: "Products"),
+      //     BottomNavigationBarItem(
+      //         icon: Icon(Icons.person, size: 30), label: "Customers"),
+      //   ],
+      // ),
     );
   }
 
@@ -150,10 +168,31 @@ class _BaseScreenState extends State<BaseScreen> {
                   },
                 ),
                 ListTile(
-                  leading: const Icon(Icons.person),
-                  title: const Text("Profile"),
+                  leading: const Icon(Icons.new_label_rounded),
+                  title: const Text("Orders"),
                   onTap: () {
                     _onItemTapped(1);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.inventory),
+                  title: const Text("Inventory"),
+                  onTap: () {
+                    _onItemTapped(2);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.next_week_rounded),
+                  title: const Text("Products"),
+                  onTap: () {
+                    _onItemTapped(3);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.person),
+                  title: const Text("Customers"),
+                  onTap: () {
+                    _onItemTapped(4);
                   },
                 ),
                 ListTile(
@@ -163,11 +202,56 @@ class _BaseScreenState extends State<BaseScreen> {
                     _onItemTapped(2);
                   },
                 ),
+                ListTile(
+                  leading: const Icon(Icons.logout),
+                  title: const Text("Logout"),
+                  onTap: () async {
+                    bool loggedout = await logout();
+                    if (loggedout) {
+                      Navigator.popUntil(
+                          context, ModalRoute.withName(AppRoutes.login));
+                    }
+                  },
+                ),
               ],
             ),
           ),
         ],
       ),
     );
+  }
+
+  Future<bool> logout() async {
+    try {
+      String userJson = authBox.get(HiveKeys.userBox);
+      String token = authBox.get(HiveKeys.accessToken);
+      User _user = User.fromJson(jsonDecode(userJson));
+
+      var body = {'user_id': _user.id};
+      Dio dio = Dio();
+
+      Response response = await dio.get(
+        EndPoints.logoutUrl,
+        queryParameters: body,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.data != null && response.data is Map<String, dynamic>) {
+        await authBox.clear();
+        return response.data['success'] == true;
+      }
+
+      return false;
+    } catch (e, stacktrace) {
+      print('Logout failed: $e');
+      print(stacktrace);
+      return false;
+    }
   }
 }

@@ -4,6 +4,7 @@ class User {
   String email;
   dynamic emailVerifiedAt;
   String number;
+  String? profilePic;
   int orgId;
   String? createdAt;
   String? updatedAt;
@@ -15,6 +16,7 @@ class User {
     required this.emailVerifiedAt,
     required this.number,
     required this.orgId,
+    this.profilePic,
     this.createdAt,
     this.updatedAt,
   });
@@ -27,6 +29,9 @@ class User {
       emailVerifiedAt: json['email_verified_at'],
       number: json['number'],
       orgId: json['org_id'],
+      profilePic: json['profile_pic'] != null
+          ? json['profile_pic']
+          : "https://via.placeholder.com/150",
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
     );
