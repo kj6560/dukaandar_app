@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:dukaandar/core/routes.dart';
 import 'package:dukaandar/core/widgets/base_screen.dart';
 import 'package:dukaandar/core/widgets/base_widget.dart';
+import 'package:dukaandar/features/schemes/data/models/scheme_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

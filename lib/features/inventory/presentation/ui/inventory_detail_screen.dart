@@ -1,4 +1,4 @@
-part of '../ui/inventory_detail_controller.dart';
+part of inventory_detail_library;
 
 class InventoryDetailScreen
     extends WidgetView<InventoryDetailScreen, InventoryDetailControllerState> {
@@ -6,169 +6,153 @@ class InventoryDetailScreen
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return BaseScreen(
-        title: "Inventory Detail",
-        body: Container(
-          child: BlocConsumer<InventoryBloc, InventoryState>(
-            listener: (context, state) {
-              // TODO: implement listener
-            },
-            builder: (context, state) {
-              if (state is LoadingInventoryDetail) {
-                return Container(
-                  child: Column(
-                    children: [
-                      Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.teal,
+      title: "Inventory Detail",
+      profilePicUrl: 'https://via.placeholder.com/150',
+      name: controllerState.name,
+      email: controllerState.email,
+      selectedIndex: 2,
+      body: BlocConsumer<InventoryBloc, InventoryState>(
+        listener: (context, state) {},
+        builder: (context, state) {
+          if (state is LoadingInventoryDetail) {
+            return const Center(
+                child: CircularProgressIndicator(color: Colors.teal));
+          } else if (state is LoadInventoryDetailFailure) {
+            return const Center(child: Text("Failed to fetch Details"));
+          } else if (state is LoadInventoryDetailSuccess) {
+            List<TransactionModel> transactions = state.response.transactions;
+
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.popAndPushNamed(
+                        context,
+                        AppRoutes.productDetails,
+                        arguments: {"product_id": state.response.productId},
+                      );
+                    },
+                    child: Card(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            Text(
+                              state.response.product.name,
+                              style: const TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              "Product Id: ${state.response.productId}",
+                              style: const TextStyle(
+                                  fontSize: 14, color: Colors.grey),
+                            ),
+                          ],
                         ),
-                      )
-                    ],
+                      ),
+                    ),
                   ),
-                );
-              } else if (state is LoadInventoryDetailFailure) {
-                return Container(
-                  child: Column(
-                    children: [Center(child: Text("Failed to fetch Details"))],
+                  const SizedBox(height: 15),
+                  Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text("Balance Quantity",
+                              style: TextStyle(fontSize: 16)),
+                          Text(
+                            "${state.response.balanceQuantity}",
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                );
-              } else if (state is LoadInventoryDetailSuccess) {
-                List<TransactionModel> tm = state.response.transactions;
-                return Container(
-                  child: Column(
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          Navigator.popAndPushNamed(
-                              context, AppRoutes.productDetails, arguments: {
-                            "product_id": state.response.productId
-                          });
-                        },
-                        child: Card(
-                          child: Container(
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Center(
-                                        child: Text(
-                                      state.response.product.name,
-                                      style: TextStyle(fontSize: 18),
-                                    ))
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Center(
-                                      child: Text(
-                                          "Product Id: ${state.response.productId}",
-                                          style: TextStyle(fontSize: 14)),
-                                    )
-                                  ],
-                                )
+                  const SizedBox(height: 15),
+                  Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          const Text(
+                            "Transactions",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 16),
+                          Container(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                  bottom:
+                                      BorderSide(color: Colors.teal.shade200)),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: const [
+                                Expanded(
+                                    child: Text("Type",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600))),
+                                Expanded(
+                                    child: Text("Quantity",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600))),
+                                Expanded(
+                                    child: Text("By",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600))),
                               ],
                             ),
                           ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Card(
-                        child: Container(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Row(
+                          const SizedBox(height: 10),
+                          ...transactions.map((item) => Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 6.0),
+                                child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text("Balance Quantity"),
-                                    Text("${state.response.balanceQuantity}")
+                                    Expanded(
+                                        child:
+                                            Text(item.transactionType ?? '-')),
+                                    Expanded(child: Text("${item.quantity}")),
+                                    Expanded(
+                                        child: Text(item.user.name ?? '-')),
                                   ],
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
+                              )),
+                        ],
                       ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Card(
-                        child: Container(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text("Transactions: "),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 15,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Text("Transaction Type"),
-                                    Text("Quantity"),
-                                    Text("Transaction By")
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 2,
-                                  child: Container(
-                                    color: Colors.teal,
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 15,
-                                ),
-                                transaction(tm)
-                              ],
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
+                    ),
                   ),
-                );
-              } else {
-                return Container();
-              }
-            },
-          ),
-        ),
-        selectedIndex: 2,
-        profilePicUrl: 'https://via.placeholder.com/150',
-        name: controllerState.name,
-        email: controllerState.email);
-  }
-
-  transaction(tm) {
-    List<Widget> tmWidgets = [];
-    tm.forEach((item) {
-      tmWidgets.add(Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Text("${item.transactionType}"),
-          Text("${item.quantity}"),
-          Text("${item.user.name}")
-        ],
-      ));
-    });
-    return Column(
-      children: tmWidgets,
+                ],
+              ),
+            );
+          } else {
+            return const SizedBox();
+          }
+        },
+      ),
     );
   }
 }

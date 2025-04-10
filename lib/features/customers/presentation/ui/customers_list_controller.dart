@@ -2,7 +2,7 @@ library customers_list_library;
 
 import 'dart:convert';
 
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dukaandar/features/customers/data/models/customers_model.dart';
 import 'package:dukaandar/features/customers/presentation/bloc/customers_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

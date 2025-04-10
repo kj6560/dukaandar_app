@@ -4,168 +4,188 @@ class ProductListUi
     extends WidgetView<ProductListUi, ProductListControllerState> {
   ProductListUi(super.controllerState, {super.key});
 
-  final List<String> items = List.generate(200, (index) => 'Item $index');
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return BaseScreen(
       title: "Products",
       profilePicUrl: 'https://via.placeholder.com/150',
       name: controllerState.name,
       email: controllerState.email,
-      body: BlocConsumer<ProductBloc, ProductState>(
-          listener: (context, state) {},
-          builder: (context, state) {
-            if (state is LoadingProductList) {
-              return Container(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.teal,
-                      ),
-                    ),
-                    Center(
-                      child: Text("Loading"),
-                    )
-                  ],
-                ),
-              );
-            } else if (state is LoadProductSuccess) {
-              print(state.response);
-              return Container(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                child: ListView.builder(
-                  itemCount:
-                      state.response.length, // Number of items in the list
-                  itemBuilder: (context, index) {
-                    Product product = state.response[index];
-                    return InkWell(
-                      onTap: () {
-                        Navigator.popAndPushNamed(
-                            context, AppRoutes.productDetails,
-                            arguments: {"product_id": product.id});
-                      },
-                      child: Container(
-                        child: Padding(
-                          padding: const EdgeInsets.all(2.0),
-                          child: Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(2.0),
-                                            child: Text(
-                                              product.name,
-                                              style: TextStyle(fontSize: 18),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(2.0),
-                                            child: Text(
-                                              "Sku: ",
-                                              style: TextStyle(fontSize: 18),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(2.0),
-                                            child: Text(
-                                              product.sku,
-                                              style: TextStyle(fontSize: 18),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(2.0),
-                                            child: Text(
-                                              "Price: ",
-                                              style: TextStyle(fontSize: 18),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(2.0),
-                                            child: Icon(
-                                              Icons.currency_rupee,
-                                              size: 12,
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(2.0),
-                                            child: Text(
-                                              '${product.productMrp}',
-                                              style: TextStyle(fontSize: 18),
-                                            ),
-                                          )
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              );
-            } else if (state is LoadProductListFailure) {
-              return Container(
-                child: Center(
-                  child: Text(state.error),
-                ),
-              );
-            } else {
-              return Container(
-                child: Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.teal,
-                  ),
-                ),
-              );
-            }
-          }),
       selectedIndex: 3,
       onFabPressed: () {
         Navigator.popAndPushNamed(context, AppRoutes.newProduct);
       },
       appBarActions: [
         IconButton(
-          icon: Icon(
-            Icons.local_offer,
-            color: Colors.white,
-          ),
+          icon: Icon(Icons.local_offer, color: Colors.white),
           onPressed: () {
             Navigator.popAndPushNamed(context, AppRoutes.listSchemes);
             print("schemes clicked");
           },
         ),
       ],
+      body: BlocBuilder<ProductBloc, ProductState>(
+        builder: (context, state) {
+          if (state is LoadingProductList) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  CircularProgressIndicator(color: Colors.teal),
+                  SizedBox(height: 8),
+                  Text("Loading"),
+                ],
+              ),
+            );
+          } else if (state is LoadProductSuccess) {
+            List<Product> allProducts = state.response;
+            List<Product> filteredProducts = List.from(allProducts);
+
+            return StatefulBuilder(
+              builder: (context, setState) {
+                return Column(
+                  children: [
+                    // Search box
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: TextField(
+                        controller: _searchController,
+                        decoration: InputDecoration(
+                          hintText: "Search Products...",
+                          prefixIcon: Icon(Icons.search),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onChanged: (query) {
+                          query = query.toLowerCase();
+                          setState(() {
+                            if (query.isEmpty) {
+                              filteredProducts = List.from(allProducts);
+                            } else {
+                              filteredProducts = allProducts.where((product) {
+                                return product.name
+                                        .toLowerCase()
+                                        .contains(query) ||
+                                    product.sku.toLowerCase().contains(query);
+                              }).toList();
+                            }
+                          });
+                        },
+                      ),
+                    ),
+
+                    // Product list
+                    Expanded(
+                      child: filteredProducts.isEmpty
+                          ? Center(child: Text("No products found"))
+                          : ListView.builder(
+                              itemCount: filteredProducts.length,
+                              itemBuilder: (context, index) {
+                                Product product = filteredProducts[index];
+                                return InkWell(
+                                  onTap: () {
+                                    Navigator.popAndPushNamed(
+                                      context,
+                                      AppRoutes.productDetails,
+                                      arguments: {
+                                        "product_id": product.id,
+                                      },
+                                    );
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12.0, vertical: 6.0),
+                                    child: Card(
+                                      elevation: 4,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              product.name,
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                            SizedBox(height: 8),
+                                            Row(
+                                              children: [
+                                                Icon(Icons.qr_code,
+                                                    size: 18,
+                                                    color: Colors.grey[700]),
+                                                SizedBox(width: 6),
+                                                Text(
+                                                  "SKU: ",
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: Colors.grey[800],
+                                                  ),
+                                                ),
+                                                Flexible(
+                                                  child: Text(
+                                                    product.sku,
+                                                    style:
+                                                        TextStyle(fontSize: 16),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 6),
+                                            Row(
+                                              children: [
+                                                Icon(Icons.currency_rupee,
+                                                    size: 18,
+                                                    color: Colors.green[700]),
+                                                SizedBox(width: 6),
+                                                Text(
+                                                  "${product.productMrp}",
+                                                  style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.green[800],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                    ),
+                  ],
+                );
+              },
+            );
+          } else if (state is LoadProductListFailure) {
+            return Center(
+              child: Text(
+                state.error,
+                style: TextStyle(color: Colors.red),
+              ),
+            );
+          } else {
+            return Center(
+              child: CircularProgressIndicator(color: Colors.teal),
+            );
+          }
+        },
+      ),
     );
-    ;
   }
 }

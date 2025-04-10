@@ -6,168 +6,95 @@ class ProductDetailScreen
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return BaseScreen(
       title: "Product Detail",
+      profilePicUrl: 'https://via.placeholder.com/150',
+      name: controllerState.name,
+      email: controllerState.email,
+      selectedIndex: 3,
+      fabIcon: Icons.edit,
+      onFabPressed: () {
+        Navigator.popAndPushNamed(context, AppRoutes.newProduct);
+      },
       body: BlocConsumer<ProductBloc, ProductState>(
         listener: (context, state) {
-          // TODO: implement listener
           if (state is DeleteProductSuccess) {
             controllerState.postDelete();
           }
         },
         builder: (context, state) {
           if (state is LoadingProductDetail) {
-            return Container(
-              child: Column(
-                children: [
-                  Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.teal,
-                    ),
-                  )
-                ],
-              ),
-            );
+            return const Center(
+                child: CircularProgressIndicator(color: Colors.teal));
           } else if (state is LoadProductDetailSuccess) {
+            final product = state.response;
+
             return SingleChildScrollView(
-              child: Container(
-                child: Card(
+              padding: const EdgeInsets.all(16.0),
+              child: Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16)),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Product Name: ",
-                              style: TextStyle(fontSize: 18),
-                            ),
-                            Expanded(
-                                child: Text(
-                              "${state.response.name}",
-                              style: TextStyle(fontSize: 15),
-                            ))
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Product Sku: ",
-                              style: TextStyle(fontSize: 18),
-                            ),
-                            Text(
-                              "${state.response.sku}",
-                              style: TextStyle(fontSize: 15),
-                            )
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Product MRP: ",
-                              style: TextStyle(fontSize: 18),
-                            ),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.currency_rupee,
-                                  size: 12,
-                                ),
-                                Text(
-                                  "${state.response.productMrp}",
-                                  style: TextStyle(fontSize: 15),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Product Base Price: ",
-                              style: TextStyle(fontSize: 18),
-                            ),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.currency_rupee,
-                                  size: 12,
-                                ),
-                                Text(
-                                  "${state.response.basePrice}",
-                                  style: TextStyle(fontSize: 15),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Product UOM: ",
-                              style: TextStyle(fontSize: 18),
-                            ),
-                            Text(
-                              "${state.response.uom!.slug}",
-                              style: TextStyle(fontSize: 15),
-                            )
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Product Active: ",
-                              style: TextStyle(fontSize: 18),
-                            ),
-                            Text(
-                              "${state.response.isActive == 1 ? 'Yes' : 'No'}",
-                              style: TextStyle(fontSize: 15),
-                            )
-                          ],
-                        ),
-                      ),
+                      buildInfoRow("Product Name", product.name),
+                      buildInfoRow("Product SKU", product.sku),
+                      buildInfoRow("Product MRP", "${product.productMrp}",
+                          isCurrency: true),
+                      buildInfoRow("Base Price", "${product.basePrice}",
+                          isCurrency: true),
+                      buildInfoRow("UOM", product.uom?.slug ?? '-'),
+                      buildInfoRow(
+                          "Active", product.isActive == 1 ? 'Yes' : 'No'),
+                      const SizedBox(height: 24),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          ElevatedButton(
-                              onPressed: () {
-                                Navigator.popAndPushNamed(
-                                    context, AppRoutes.editProduct, arguments: {
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.popAndPushNamed(
+                                context,
+                                AppRoutes.editProduct,
+                                arguments: {
                                   "product_id": controllerState.product_id
-                                });
-                              },
-                              child: Text("Edit")),
-                          SizedBox(
-                            width: 50,
+                                },
+                              );
+                            },
+                            icon: const Icon(
+                              Icons.edit,
+                              color: Colors.white,
+                            ),
+                            label: const Text(
+                              "Edit",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.teal,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 12),
+                            ),
                           ),
-                          ElevatedButton(
-                              onPressed: () {
-                                controllerState.deleteProduct();
-                              },
-                              child: Text("Delete")),
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              controllerState.deleteProduct();
+                            },
+                            icon: const Icon(
+                              Icons.delete,
+                              color: Colors.white,
+                            ),
+                            label: const Text(
+                              "Delete",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 12),
+                            ),
+                          ),
                         ],
                       )
                     ],
@@ -176,26 +103,42 @@ class ProductDetailScreen
               ),
             );
           } else {
-            return Container(
-              child: Column(
-                children: [
-                  Center(
-                    child: Text("Product Loading Failed"),
-                  )
-                ],
-              ),
-            );
+            return const Center(child: Text("Product Loading Failed"));
           }
         },
       ),
-      fabIcon: Icons.edit,
-      onFabPressed: () {
-        Navigator.popAndPushNamed(context, AppRoutes.newProduct);
-      },
-      selectedIndex: 3,
-      profilePicUrl: 'https://via.placeholder.com/150',
-      name: controllerState.name,
-      email: controllerState.email,
+    );
+  }
+
+  Widget buildInfoRow(String label, String value, {bool isCurrency = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 2,
+            child: Text(
+              "$label:",
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            ),
+          ),
+          Expanded(
+            flex: 3,
+            child: Row(
+              children: [
+                if (isCurrency) const Icon(Icons.currency_rupee, size: 16),
+                Flexible(
+                  child: Text(
+                    value,
+                    style: const TextStyle(fontSize: 15),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
