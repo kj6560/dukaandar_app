@@ -16,6 +16,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc() : super(LoginInitial()) {
     on<LoginButtonPressed>(_loginToServer);
     on<LoginButtonClicked>(_loginClicked);
+    on<LoginReset>((event, emit) {
+      emit(LoginInitial());
+    });
   }
 
   _loginClicked(LoginButtonClicked event, Emitter<LoginState> emit) {
@@ -40,9 +43,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         emit(LoginFailure("Login failed."));
         return;
       }
+      if (loginResponse.statusCode == 401) {
+        emit(LoginFailure(loginResponse.data['error']));
+      }
       if (loginResponse.data != null) {
-        User user = User.fromJson(loginResponse.data['user']);
-        emit(LoginSuccess(user, loginResponse.data['token']));
+        if (loginResponse.statusCode == 200) {
+          User user = User.fromJson(loginResponse.data['user']);
+          emit(LoginSuccess(user, loginResponse.data['token']));
+        } else if (loginResponse.statusCode == 202) {
+          emit(LoginFailure(loginResponse.message));
+        }
       } else {
         emit(LoginFailure("No user found for the given credentials."));
       }

@@ -5,25 +5,32 @@ class Login extends WidgetView<Login, LoginControllerState> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       body: BlocConsumer<LoginBloc, LoginState>(
-        builder: (BuildContext context, state) {
-          if (state is LoginLoading) {
-            return Container(
-              margin: EdgeInsets.all(100),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.teal,
-                    ),
-                  )
-                ],
+        listener: (BuildContext context, Object? state) {
+          if (state is LoginSuccess) {
+            controllerState.handleApiResponse(context, state);
+          } else if (state is LoginFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.error ?? "Login failed"),
+                backgroundColor: Colors.redAccent,
+                behavior: SnackBarBehavior.floating,
+                duration: Duration(seconds: 3),
               ),
             );
-          } else if (state is LoginInitial) {
+          }
+        },
+        builder: (BuildContext context, state) {
+          print('🔄 LoginBloc State: $state');
+          if (state is LoginLoading) {
+            return Center(
+              child: CircularProgressIndicator(color: Colors.teal),
+            );
+          }
+
+          // Show login form for initial and failure states
+          if (state is LoginInitial || state is LoginFailure) {
             return SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -42,10 +49,7 @@ class Login extends WidgetView<Login, LoginControllerState> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    "Login",
-                                    style: TextStyle(fontSize: 20),
-                                  )
+                                  Text("Login", style: TextStyle(fontSize: 20)),
                                 ],
                               ),
                               const SizedBox(height: 50),
@@ -67,7 +71,7 @@ class Login extends WidgetView<Login, LoginControllerState> {
                                   return null;
                                 },
                               ),
-                              const SizedBox(height: 30), // Add spacing
+                              const SizedBox(height: 30),
                               TextFormField(
                                 controller: controllerState.passwordController,
                                 obscureText: controllerState.isPasswordHidden,
@@ -98,74 +102,56 @@ class Login extends WidgetView<Login, LoginControllerState> {
                                   return null;
                                 },
                               ),
-                              const SizedBox(height: 30), // Add spacing
+                              const SizedBox(height: 30),
                               SizedBox(
                                 width: 150,
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    BlocProvider.of<LoginBloc>(context)
-                                        .add(LoginButtonClicked());
-                                    controllerState.loginToApp();
+                                    if (controllerState
+                                        .loginFormKey.currentState!
+                                        .validate()) {
+                                      BlocProvider.of<LoginBloc>(context)
+                                          .add(LoginButtonClicked());
+                                      controllerState.loginToApp();
+                                    }
                                   },
-                                  child: const Text(
-                                    "Login",
-                                    style: TextStyle(fontSize: 18),
-                                  ),
+                                  child: const Text("Login",
+                                      style: TextStyle(fontSize: 18)),
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Don't Have an account?",
-                              style: TextStyle(fontSize: 18),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            )
-                          ],
+                        const SizedBox(height: 20),
+                        Text("Don't Have an account?",
+                            style: TextStyle(fontSize: 18)),
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          width: 150,
+                          child: ElevatedButton(
+                            onPressed: () {},
+                            child: const Text("Sign Up",
+                                style: TextStyle(fontSize: 18)),
+                          ),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: 150,
-                              child: ElevatedButton(
-                                  onPressed: () {},
-                                  child: Text(
-                                    "Sign Up",
-                                    style: TextStyle(fontSize: 18),
-                                  )),
-                            )
-                          ],
-                        )
                       ],
                     ),
                   ),
-                  SizedBox(
-                    height: 50,
-                  ),
+                  const SizedBox(height: 50),
                   Column(
                     children: [
                       Text("Powered By Shiwkesh Schematics Private Limited"),
                       Text("All Rights Reserved"),
-                      Text('version: ${controllerState.appVersion ?? '1.0.0'}')
+                      Text('version: ${controllerState.appVersion ?? '1.0.0'}'),
                     ],
                   )
                 ],
               ),
             );
-          } else {
-            return Container();
           }
-        },
-        listener: (BuildContext context, Object? state) {
-          if (state is LoginSuccess) {
-            controllerState.handleApiResponse(context, state);
-          }
+
+          // Fallback
+          return Container();
         },
       ),
     );

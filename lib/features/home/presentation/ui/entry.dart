@@ -14,12 +14,17 @@ class Entry extends StatefulWidget {
 class _EntryState extends State<Entry> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+
     Future.delayed(Duration.zero, () {
-      if (authBox.get(HiveKeys.accessToken) != null) {
+      final token = authBox.get(HiveKeys.accessToken);
+      print('🟡 Entry check - token = $token');
+
+      if (token != null) {
+        print('🟢 Navigating to HOME');
         Navigator.pushReplacementNamed(context, AppRoutes.home);
       } else {
+        print('🔴 Navigating to LOGIN');
         Navigator.pushReplacementNamed(context, AppRoutes.login);
       }
     });

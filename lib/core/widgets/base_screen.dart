@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../features/Auth/data/User.dart';
+import '../../features/Auth/presentation/bloc/login_bloc.dart';
 import '../config/config.dart';
 import '../config/endpoints.dart';
 import '../local/hive_constants.dart';
@@ -211,8 +213,12 @@ class _BaseScreenState extends State<BaseScreen> {
                   onTap: () async {
                     bool loggedout = await logout();
                     if (loggedout) {
-                      Navigator.popUntil(
-                          context, ModalRoute.withName(AppRoutes.login));
+                      BlocProvider.of<LoginBloc>(context).add(LoginReset());
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        AppRoutes.entry,
+                        (route) => false,
+                      );
                     }
                   },
                 ),

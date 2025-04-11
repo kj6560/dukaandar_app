@@ -33,6 +33,7 @@ class LoginControllerState extends State<LoginController> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    print("reached login");
   }
 
   Future<void> getAppVersion() async {
