@@ -82,6 +82,9 @@ class _BaseScreenState extends State<BaseScreen> {
       case 4:
         route = AppRoutes.listCustomers;
         break;
+      case 5:
+        route = AppRoutes.appSettings;
+        break;
       default:
         return;
     }
@@ -199,7 +202,7 @@ class _BaseScreenState extends State<BaseScreen> {
                   leading: const Icon(Icons.settings),
                   title: const Text("Settings"),
                   onTap: () {
-                    _onItemTapped(2);
+                    _onItemTapped(5);
                   },
                 ),
                 ListTile(

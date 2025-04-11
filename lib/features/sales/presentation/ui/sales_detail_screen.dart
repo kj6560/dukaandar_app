@@ -77,7 +77,10 @@ class SalesDetailScreen
                     height: 40,
                     width: double.infinity,
                     child: ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () {
+                        controllerState
+                            .printInvoice(state.response.print_invoice);
+                      },
                       icon: Icon(Icons.print),
                       label: Text("Print Invoice"),
                       style: ElevatedButton.styleFrom(
@@ -121,85 +124,101 @@ class SalesDetailScreen
   Widget showDetail(dynamic details) {
     var decoded = jsonDecode(details);
 
-    return ListView.separated(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: decoded.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 12),
-      itemBuilder: (context, index) {
-        final item = decoded[index];
-
-        return Card(
-          elevation: 4,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.shopping_bag, color: Colors.teal.shade700),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        item['product_name'],
-                        style: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                _buildItemDetail("Price", item['base_price']),
-                const Divider(),
-                _buildItemDetail("Quantity", item['quantity']),
-                const Divider(),
-                _buildItemDetail("Tax", item['tax']),
-                const Divider(),
-                _buildItemDetail("Discount", item['discount']),
-                const SizedBox(height: 12),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: Colors.teal.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        "Net: ₹${item['net_price']}",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.teal.shade700,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Order Items",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.teal.shade800,
+              ),
             ),
-          ),
-        );
-      },
+            const SizedBox(height: 12),
+            // Add horizontal and vertical scroll
+            SizedBox(
+              height: 300, // Adjust height as needed
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Table(
+                    columnWidths: const {
+                      0: FixedColumnWidth(140), // Product Name
+                      1: FixedColumnWidth(60),
+                      2: FixedColumnWidth(80),
+                      3: FixedColumnWidth(70),
+                      4: FixedColumnWidth(80),
+                      5: FixedColumnWidth(90),
+                    },
+                    border: TableBorder.symmetric(
+                      inside:
+                          BorderSide(width: 0.5, color: Colors.grey.shade300),
+                      outside:
+                          BorderSide(width: 1, color: Colors.grey.shade400),
+                    ),
+                    children: [
+                      // Table Header
+                      TableRow(
+                        decoration: BoxDecoration(color: Colors.teal.shade50),
+                        children: [
+                          _tableHeader("Product"),
+                          _tableHeader("Qty"),
+                          _tableHeader("Price"),
+                          _tableHeader("Tax"),
+                          _tableHeader("Disc."),
+                          _tableHeader("Net"),
+                        ],
+                      ),
+                      // Table Rows
+                      ...decoded.map<TableRow>((item) {
+                        return TableRow(
+                          children: [
+                            _tableCell(item['product_name']),
+                            _tableCell(item['quantity']),
+                            _tableCell("₹${item['base_price']}"),
+                            _tableCell("₹${item['tax']}"),
+                            _tableCell("₹${item['discount']}"),
+                            _tableCell("₹${item['net_price']}"),
+                          ],
+                        );
+                      }).toList(),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _buildItemDetail(String label, dynamic value) {
+  Widget _tableHeader(String text) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label, style: TextStyle(color: Colors.grey.shade700)),
-          Text("$value", style: const TextStyle(fontWeight: FontWeight.w600)),
-        ],
+      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 4),
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 14,
+        ),
+      ),
+    );
+  }
+
+  Widget _tableCell(dynamic value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4),
+      child: Text(
+        "$value",
+        style: const TextStyle(fontSize: 13),
       ),
     );
   }

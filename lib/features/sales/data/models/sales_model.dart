@@ -18,20 +18,21 @@ class SalesModel {
   int netTotal;
   int createdBy;
   String orderDetails;
+  String print_invoice;
 
-  SalesModel({
-    required this.orderId,
-    required this.orgId,
-    required this.orderDate,
-    required this.totalOrderValue,
-    required this.totalOrderDiscount,
-    required this.netOrderValue,
-    required this.orderStatus,
-    required this.tax,
-    required this.netTotal,
-    required this.createdBy,
-    required this.orderDetails,
-  });
+  SalesModel(
+      {required this.orderId,
+      required this.orgId,
+      required this.orderDate,
+      required this.totalOrderValue,
+      required this.totalOrderDiscount,
+      required this.netOrderValue,
+      required this.orderStatus,
+      required this.tax,
+      required this.netTotal,
+      required this.createdBy,
+      required this.orderDetails,
+      required this.print_invoice});
 
   factory SalesModel.fromJson(Map<String, dynamic> json) {
     return SalesModel(
@@ -45,7 +46,8 @@ class SalesModel {
         tax: json['tax'],
         netTotal: json['net_total'],
         createdBy: json['created_by'],
-        orderDetails: json['order_details']);
+        orderDetails: json['order_details'],
+        print_invoice: json['print_invoice']);
   }
 
   Map<String, dynamic> toJson() {
@@ -60,7 +62,8 @@ class SalesModel {
       'tax': tax,
       'net_total': netTotal,
       'created_by': createdBy,
-      'order_details': orderDetails
+      'order_details': orderDetails,
+      'print_invoice': print_invoice
     };
   }
 }

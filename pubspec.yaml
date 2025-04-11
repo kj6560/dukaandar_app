@@ -30,6 +30,7 @@ dependencies:
   dropdown_search: ^5.0.6
   paytm_allinonesdk:
   auto_size_text:
+  blue_thermal_printer:
   cupertino_icons: ^1.0.6
 
 dev_dependencies:

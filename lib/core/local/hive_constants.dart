@@ -5,4 +5,5 @@ class HiveConstantBox {
 class HiveKeys {
   static const accessToken = "accessToken";
   static const userBox = "userBox";
+  static const settingsBox = "settingsBox";
 }

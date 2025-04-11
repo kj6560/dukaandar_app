@@ -2,6 +2,7 @@ library sales_detail_library;
 
 import 'dart:convert';
 
+import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:dukaandar/core/widgets/base_screen.dart';
 import 'package:dukaandar/core/widgets/base_widget.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,7 @@ class SalesDetailState extends State<SalesDetailController> {
   String name = "";
   String email = "";
   String? salesId; // Store the received argument
+  BluetoothDevice? selectedPrinter;
 
   @override
   void initState() {
@@ -77,5 +79,66 @@ class SalesDetailState extends State<SalesDetailController> {
   @override
   Widget build(BuildContext context) {
     return SalesDetailScreen(this);
+  }
+
+  Future<void> printInvoice(String invoiceText) async {
+    final printer = BlueThermalPrinter.instance;
+
+    // Step 1: Load saved printer address
+    final userSettings = await authBox.get(HiveKeys.settingsBox);
+    if (userSettings == null) {
+      print("❌ No printer settings found.");
+      return;
+    }
+
+    late Map<String, dynamic> settings;
+    try {
+      settings = jsonDecode(userSettings);
+    } catch (_) {
+      print("❌ Failed to decode printer settings.");
+      return;
+    }
+
+    final savedAddress = settings['printer_connected'];
+    if (savedAddress == null) {
+      print("❌ No printer saved.");
+      return;
+    }
+
+    // Step 2: Get bonded (paired) devices
+    final bondedDevices = await printer.getBondedDevices();
+
+    BluetoothDevice? matchedPrinter;
+    try {
+      matchedPrinter = bondedDevices.firstWhere(
+        (device) => device.address == savedAddress,
+      );
+    } catch (_) {
+      matchedPrinter = null;
+    }
+
+    if (matchedPrinter == null) {
+      print("❌ Saved printer not found among paired devices.");
+      return;
+    }
+
+    // Step 3: Connect and Print
+    try {
+      final isConnected = await printer.isConnected ?? false;
+      if (!isConnected) {
+        await printer.connect(matchedPrinter);
+        await Future.delayed(
+            Duration(milliseconds: 300)); // optional stabilization
+      }
+
+      printer.printNewLine();
+      printer.printCustom(invoiceText, 1, 0); // font size 1, align left
+      printer.printNewLine();
+      printer.paperCut();
+
+      print("✅ Invoice printed to ${matchedPrinter.name}");
+    } catch (e) {
+      print("❌ Printing failed: $e");
+    }
   }
 }

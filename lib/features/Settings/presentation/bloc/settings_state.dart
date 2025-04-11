@@ -1,6 +1,13 @@
 part of 'settings_bloc.dart';
 
 @immutable
-sealed class SettingsState {}
+abstract class SettingsState {}
 
-final class SettingsInitial extends SettingsState {}
+class SettingsInitial extends SettingsState {}
+
+class PrintersLoaded extends SettingsState {
+  final List<BluetoothDevice> pairedPrinters;
+  final BluetoothDevice? selectedPrinter;
+
+  PrintersLoaded(this.pairedPrinters, this.selectedPrinter);
+}

@@ -171,6 +171,9 @@ class HomeScreen extends WidgetView<HomeScreen, HomeControllerState> {
                           ),
                         ),
                       ),
+                      Container(
+                        child: Text("hello"),
+                      )
                     ],
                   ),
                 );
