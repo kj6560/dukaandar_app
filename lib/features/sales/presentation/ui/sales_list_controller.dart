@@ -26,6 +26,8 @@ class SalesListController extends StatefulWidget {
 class SalesListControllerState extends State<SalesListController> {
   String name = "";
   String email = "";
+  bool hasActiveSubscription = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -40,6 +42,12 @@ class SalesListControllerState extends State<SalesListController> {
     setState(() {
       name = user.name;
       email = user.email;
+    });
+  }
+
+  void changeSubscriptionStatus(bool status) {
+    setState(() {
+      hasActiveSubscription = status;
     });
   }
 

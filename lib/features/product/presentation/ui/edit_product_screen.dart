@@ -32,7 +32,7 @@ class EditProductScreen
           }
         },
       ),
-      profilePicUrl: "profilePicUrl",
+      profilePicUrl: "https://via.placeholder.com/150",
       name: "name",
       email: "email",
     );

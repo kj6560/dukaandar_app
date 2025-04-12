@@ -27,4 +27,6 @@ class EndPoints {
   static const String newCustomer = '${baseUrl}/api/createCustomer';
 
   static const String generateBarcode = '${baseUrl}/api/generateBarcode';
+
+  static const String createOrganization = '${baseUrl}/api/registerOrg';
 }

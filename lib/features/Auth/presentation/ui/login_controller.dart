@@ -9,6 +9,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../../core/config/config.dart';
 import '../../../../core/local/hive_constants.dart';
+import '../../../../core/routes.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../core/widgets/base_widget.dart';
 

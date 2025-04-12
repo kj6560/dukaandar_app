@@ -28,38 +28,37 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   Future<void> _loginToServer(
       LoginButtonPressed event, Emitter<LoginState> emit) async {
+    emit(LoginLoading()); // ✅ Emit loading state once
+
     try {
-      print("${event.email}");
+      print("📩 Logging in: ${event.email}");
       final response =
           await authRepositoryImpl.login(event.email, event.password);
+
       if (response == null || response.data == null) {
+        print("a");
         emit(LoginFailure("No response from server"));
         return;
       }
+
       final data =
           response.data is String ? jsonDecode(response.data) : response.data;
       final loginResponse = Response.fromJson(data);
-      if (loginResponse.statusCode == 400 || loginResponse.statusCode == 500) {
-        emit(LoginFailure("Login failed."));
-        return;
-      }
-      if (loginResponse.statusCode == 401) {
-        emit(LoginFailure(loginResponse.data['error']));
-      }
-      if (loginResponse.data != null) {
-        if (loginResponse.statusCode == 200) {
-          User user = User.fromJson(loginResponse.data['user']);
-          emit(LoginSuccess(user, loginResponse.data['token']));
-        } else if (loginResponse.statusCode == 202) {
-          emit(LoginFailure(loginResponse.message));
-        }
+
+      if (loginResponse.statusCode == 200 && loginResponse.data != null) {
+        final user = User.fromJson(loginResponse.data['user']);
+        emit(LoginSuccess(user, loginResponse.data['token']));
       } else {
-        emit(LoginFailure("No user found for the given credentials."));
+        // 🔥 Handle all error messages in one place
+        final message = loginResponse.message ?? "Login failed.";
+        print("b");
+        emit(LoginFailure(message));
       }
     } catch (e, stacktrace) {
-      print('Exception in bloc: $e');
-      print('Stacktrace: $stacktrace');
-      emit(LoginFailure("An error occurred."));
+      print('❌ Exception in login bloc: $e');
+      print('📌 Stacktrace: $stacktrace');
+      print("c");
+      emit(LoginFailure("An unexpected error occurred. Please try again."));
     }
   }
 }

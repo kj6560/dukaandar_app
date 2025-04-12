@@ -1,4 +1,5 @@
 import 'package:dukaandar/features/Auth/presentation/ui/login_controller.dart';
+import 'package:dukaandar/features/Organization/presentation/ui/create_organization_controller.dart';
 import 'package:dukaandar/features/customers/presentation/ui/customers_list_controller.dart';
 import 'package:dukaandar/features/home/presentation/ui/home_controller.dart';
 import 'package:dukaandar/features/inventory/presentation/ui/inventory_detail_controller.dart';
@@ -44,6 +45,7 @@ class AppRoutes {
   static const String inventoryDetails = '/inventory_details';
   static const String schemeDetails = '/scheme_details';
   static const String appSettings = '/settings';
+  static const String createOrg = '/createOrganization';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -129,6 +131,9 @@ class AppRoutes {
           },
           settings: settings, // Ensure arguments are attached to the route
         );
+      case createOrg:
+        return MaterialPageRoute(
+            builder: (_) => CreateOrganizationController());
       default:
         return MaterialPageRoute(builder: (_) => LoginController());
     }

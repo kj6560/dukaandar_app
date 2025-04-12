@@ -15,18 +15,63 @@ class ProductListUi
       email: controllerState.email,
       selectedIndex: 3,
       onFabPressed: () {
-        Navigator.popAndPushNamed(context, AppRoutes.newProduct);
+        print("has subscription: ${controllerState.hasActiveSubscription}");
+        if (controllerState.hasActiveSubscription) {
+          Navigator.pushNamed(context, AppRoutes.newProduct);
+        } else {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Subscription Required"),
+                content: Text(
+                    "You don't have an active subscription. Please contact Admin."),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text("OK", style: TextStyle(color: Colors.teal)),
+                  ),
+                ],
+              );
+            },
+          );
+        }
       },
       appBarActions: [
         IconButton(
           icon: Icon(Icons.local_offer, color: Colors.white),
           onPressed: () {
-            Navigator.popAndPushNamed(context, AppRoutes.listSchemes);
+            if (controllerState.hasActiveSubscription) {
+              Navigator.popAndPushNamed(context, AppRoutes.listSchemes);
+            } else {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text("Subscription Required"),
+                    content: Text(
+                        "You don't have an active subscription. Please contact Admin."),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Text("OK", style: TextStyle(color: Colors.teal)),
+                      ),
+                    ],
+                  );
+                },
+              );
+            }
             print("schemes clicked");
           },
         ),
       ],
-      body: BlocBuilder<ProductBloc, ProductState>(
+      body: BlocConsumer<ProductBloc, ProductState>(
+        listener: (context, state) {
+          if (state is LoadProductListFailure) {
+            print("trigger change");
+            controllerState.changeSubscriptionStatus(false);
+          }
+        },
         builder: (context, state) {
           if (state is LoadingProductList) {
             return Center(
@@ -47,7 +92,6 @@ class ProductListUi
               builder: (context, setState) {
                 return Column(
                   children: [
-                    // Search box
                     Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: TextField(
@@ -76,8 +120,6 @@ class ProductListUi
                         },
                       ),
                     ),
-
-                    // Product list
                     Expanded(
                       child: filteredProducts.isEmpty
                           ? Center(child: Text("No products found"))
@@ -90,9 +132,7 @@ class ProductListUi
                                     Navigator.popAndPushNamed(
                                       context,
                                       AppRoutes.productDetails,
-                                      arguments: {
-                                        "product_id": product.id,
-                                      },
+                                      arguments: {"product_id": product.id},
                                     );
                                   },
                                   child: Padding(
@@ -174,9 +214,11 @@ class ProductListUi
             );
           } else if (state is LoadProductListFailure) {
             return Center(
-              child: Text(
-                state.error,
-                style: TextStyle(color: Colors.red),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(state.error),
+                ],
               ),
             );
           } else {

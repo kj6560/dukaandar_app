@@ -49,6 +49,10 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
         emit(LoadInventoryFailure("Login failed."));
         return;
       }
+      if (response.statusCode == 202) {
+        emit(LoadInventoryFailure(response.data['message']));
+        return;
+      }
       emit(LoadInventorySuccess(inventories));
     } catch (e, stacktrace) {
       print('Exception in bloc: $e');

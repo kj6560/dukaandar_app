@@ -183,6 +183,7 @@ class EditProductControllerState extends State<EditProductController> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    initAuthCred();
     BlocProvider.of<ProductBloc>(context).add(LoadProductUom());
   }
 

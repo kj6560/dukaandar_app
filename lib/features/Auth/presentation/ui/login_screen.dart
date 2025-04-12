@@ -95,9 +95,6 @@ class Login extends WidgetView<Login, LoginControllerState> {
                                   final trimmedValue = value?.trim() ?? '';
                                   if (trimmedValue.isEmpty) {
                                     return 'Password is required';
-                                  } else if (!MyValidator.isValidPassword(
-                                      trimmedValue)) {
-                                    return 'Incorrect Password';
                                   }
                                   return null;
                                 },
@@ -129,7 +126,10 @@ class Login extends WidgetView<Login, LoginControllerState> {
                         SizedBox(
                           width: 150,
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pushReplacementNamed(
+                                  context, AppRoutes.createOrg);
+                            },
                             child: const Text("Sign Up",
                                 style: TextStyle(fontSize: 18)),
                           ),

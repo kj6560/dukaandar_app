@@ -51,6 +51,10 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         emit(LoadProductListFailure("Login failed."));
         return;
       }
+      if (response.statusCode == 202) {
+        emit(LoadProductListFailure(response.data['message']));
+        return;
+      }
       emit(LoadProductSuccess(products));
     } catch (e, stacktrace) {
       print('Exception in bloc: $e');
