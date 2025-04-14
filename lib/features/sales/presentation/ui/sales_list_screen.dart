@@ -39,6 +39,8 @@ class SalesListUi extends WidgetView<SalesListUi, SalesListControllerState> {
           listener: (context, state) {
             if (state is LoadSalesFailure) {
               controllerState.changeSubscriptionStatus(false);
+            }else if(state is LoadSalesSuccess) {
+              controllerState.changeSubscriptionStatus(true);
             }
             // You can add more listeners for other states if needed
           },

@@ -40,6 +40,8 @@ class CustomersListScreen
         listener: (context, state) {
           if (state is LoadCustomersFailure) {
             controllerState.changeSubscriptionStatus(false);
+          }else if(state is LoadCustomersSuccess) {
+            controllerState.changeSubscriptionStatus(true);
           }
         },
         builder: (context, state) {

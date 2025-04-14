@@ -19,6 +19,7 @@ class InventoryListUi
           if (state is LoadInventorySuccess) {
             filteredInventory = List.from(state.response);
             _searchController.clear();
+            controllerState.changeSubscriptionStatus(true);
           }
           if (state is LoadInventoryFailure) {
             controllerState.changeSubscriptionStatus(false);

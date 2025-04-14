@@ -70,6 +70,8 @@ class ProductListUi
           if (state is LoadProductListFailure) {
             print("trigger change");
             controllerState.changeSubscriptionStatus(false);
+          }else if(state is LoadProductSuccess) {
+            controllerState.changeSubscriptionStatus(true);
           }
         },
         builder: (context, state) {
