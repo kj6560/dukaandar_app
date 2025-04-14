@@ -15,9 +15,33 @@ class CustomersListScreen
       email: controllerState.email,
       selectedIndex: 4,
       onFabPressed: () {
-        Navigator.popAndPushNamed(context, AppRoutes.newCustomer);
+        if (controllerState.hasActiveSubscription) {
+          Navigator.pushNamed(context, AppRoutes.newCustomer);
+        } else {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Subscription Required"),
+                content: Text(
+                    "You don't have an active subscription. Please contact Admin."),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text("OK", style: TextStyle(color: Colors.teal)),
+                  ),
+                ],
+              );
+            },
+          );
+        }
       },
-      body: BlocBuilder<CustomersBloc, CustomersState>(
+      body: BlocConsumer<CustomersBloc, CustomersState>(
+        listener: (context, state) {
+          if (state is LoadCustomersFailure) {
+            controllerState.changeSubscriptionStatus(false);
+          }
+        },
         builder: (context, state) {
           if (state is LoadingCustomers) {
             return Center(
@@ -170,6 +194,15 @@ class CustomersListScreen
                   ],
                 );
               },
+            );
+          } else if (state is LoadCustomersFailure) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(state.error),
+                ],
+              ),
             );
           } else {
             return Center(child: Text("Customers Not Found"));

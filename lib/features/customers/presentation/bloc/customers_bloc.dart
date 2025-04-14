@@ -58,8 +58,13 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
           createdAt: "createdAt",
           updatedAt: "updatedAt");
       customers.insert(0, falseCustomer);
+      print(response.statusCode);
       if (response.statusCode == 401) {
         emit(LoadCustomersFailure("Login failed."));
+        return;
+      }
+      if (response.statusCode == 202) {
+        emit(LoadCustomersFailure(response.data['message']));
         return;
       }
       emit(LoadCustomersSuccess(customers));
@@ -97,6 +102,10 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
         emit(LoadCustomersFailure("Login failed."));
         return;
       }
+      if (response.statusCode == 202) {
+        emit(LoadCustomersFailure(response.data['message']));
+        return;
+      }
       emit(CustomerLoaded(customer));
     } catch (e, stacktrace) {
       print('Exception in bloc:$e');
@@ -129,6 +138,10 @@ class CustomersBloc extends Bloc<CustomersEvent, CustomersState> {
 
       if (response.statusCode == 401) {
         emit(LoadCustomersFailure("Login failed."));
+        return;
+      }
+      if (response.statusCode == 202) {
+        emit(LoadCustomersFailure(response.data['message']));
         return;
       }
       emit(LoadCustomersSuccess(customers));
